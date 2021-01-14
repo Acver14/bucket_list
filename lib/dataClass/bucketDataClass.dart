@@ -1,3 +1,5 @@
+import 'package:bucket_list/constantClass/enumValues.dart';
+
 class BucketClass{
   String _title;
   String _category;
@@ -7,7 +9,20 @@ class BucketClass{
   DateTime _startDate;
   DateTime _closingDate;
   DateTime _achievementDate;
-  int _importance;
+  Importance _importance;
+
+  @override
+  BucketClass(){
+    this._title = '';
+    this._category = '';
+    this._image = [];
+    this._content = '';
+    this._address = '';
+    this._startDate = DateTime.now();
+    this._closingDate = DateTime.now();
+    this._achievementDate = DateTime.now();
+    this._importance = Importance.middle;
+  }
 
   Map<String, String> toMap(){
     return  {

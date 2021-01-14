@@ -31,8 +31,7 @@ class BucketListPageState extends State<BucketListPage> {
                 Container(
                   margin: EdgeInsets.only(left: 20, top: 10),
                   height: 50,
-                  child:
-                  DropdownButton(
+                  child: DropdownButton(
                       value: _sorting,
                       items: [
                         DropdownMenuItem(
