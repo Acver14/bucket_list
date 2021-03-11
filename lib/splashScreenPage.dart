@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'bucketListPage.dart';
+import 'package:bucket_list/signUpPage.dart';
 import 'method/pageMoveMethod.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
   void initState() {
     super.initState();
     Timer(Duration(milliseconds: 1500), () {
-        moveToPageBySlide(context, BucketListPage());
+        moveToPageBySlide(context, SignUpPage());
     });
   }
 

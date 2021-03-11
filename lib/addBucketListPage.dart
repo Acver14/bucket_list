@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'constantClass/sizeConstant.dart';
 import 'dataClass/bucketDataClass.dart';
 import 'dataClass/categoryDataClass.dart';
-
+import 'method/manageImage.dart';
+import 'widgetClass/imageCardList.dart';
 import 'method/popupMenu.dart';
 import 'method/printLog.dart';
 
@@ -24,6 +25,8 @@ class AddBucketListPageState extends State<AddBucketListPage> {
   TextEditingController _contentCon = new TextEditingController();
   TextEditingController _importanceCon = new TextEditingController();
 
+  var imageMap;
+
   @override
   Widget build(BuildContext context) {
     printLog(categoryData.toString());
@@ -35,47 +38,40 @@ class AddBucketListPageState extends State<AddBucketListPage> {
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(icon: new Icon(Icons.arrow_back_ios, color: Colors.black,), onPressed: ()=>Navigator.pop(context)),
+        actions: [
+          DropdownButtonHideUnderline(
+          child: DropdownButton(
+              value: categoryData.selected,
+              items: categoryData.getCategoryDropDownMenuItemList(),
+              onChanged: (value) async {
+                if(value == 0){
+                  String new_category = await popupTextField(context);
+                  value = categoryData.getIndex(categoryData.addCategory(new_category));
+                }
+                setState(() {
+                  categoryData.selected = value;
+                });
+              }),
+          )
+        ],
       ),
       body: Container(
         margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
         child:Column(
           children: [
-            Row(
-              children: [
-                Flexible(
-                    child: TextField(
-                    obscureText: false,
-                    textInputAction: TextInputAction.continueAction,
-                    cursorColor: Colors.black,
-                    cursorWidth: 1.0,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.0),),
-                      labelText: '제목',
-                      labelStyle: TextStyle(color: Colors.black),
-                    ),
+            Container(
+              width: getDisplayWidth(context),
+              child: TextField(
+                controller: _titleCon,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)
                   ),
+                  labelText: '제목'
                 ),
-                Container(
-                  // margin: EdgeInsets.only(left: 20, top: 10),
-                  height: 50,
-                  width: 150,
-                  alignment: Alignment.bottomRight,
-                  child: DropdownButton(
-                      value: categoryData.selected,
-                      items: categoryData.getCategoryDropDownMenuItemList(),
-                      onChanged: (value) async {
-                        if(value == 0){
-                          String new_category = await popupTextField(context);
-                          value = categoryData.getIndex(categoryData.addCategory(new_category));
-                        }
-                        setState(() {
-                          categoryData.selected = value;
-                        });
-                      }),
-                )
-              ],
-            )
+                cursorColor: Colors.black,
+              )
+            ),
           ],
         ),
       ),

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "558642556189",
+    "project_id": "bucket-list-38be8",
+    "storage_bucket": "bucket-list-38be8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558642556189:android:8b22f73c987b0f79e645f4",
+        "android_client_info": {
+          "package_name": "com.acver.bucket_list"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558642556189-4ki1qi3fd9fnmr739pouqfv3nfl24d0k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acver.bucket_list",
+            "certificate_hash": "f566cfd930c41e8ae3078880bd5047c56472f9c5"
+          }
+        },
+        {
+          "client_id": "558642556189-9cknn7nd84v80gli4f2toafeei77h4um.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558642556189-9cknn7nd84v80gli4f2toafeei77h4um.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

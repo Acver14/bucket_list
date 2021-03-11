@@ -1,18 +1,23 @@
+import 'dart:io';
 import 'package:bucket_list/constantClass/enumValues.dart';
+import 'package:bucket_list/method/imageConveter.dart';
 
 class BucketClass{
+  int _id;
   String _title;
   String _category;
-  List<String> _image;
+  List<File> _image;
   String _content;
   String _address;
   DateTime _startDate;
   DateTime _closingDate;
   DateTime _achievementDate;
   Importance _importance;
+  static int count = 0;
 
   @override
   BucketClass(){
+    this._id = count++;
     this._title = '';
     this._category = '';
     this._image = [];
@@ -24,8 +29,38 @@ class BucketClass{
     this._importance = Importance.middle;
   }
 
+  bool addImage(File new_image){
+    if(new_image != null){
+      _image.add(new_image);
+      return true;
+    }
+    else return false;
+  }
+
+  bool existImage(){
+    print(_image.isNotEmpty);
+    return _image.isNotEmpty;
+  }
+
+  getLastImage(){
+    print(_image[0]);
+    if(_image.isNotEmpty) return _image[_image.length-1];
+    else return -1;
+  }
+
+  imageListToMap() async {
+    Map<String, String> m = new Map();
+    File plusImage = await getImageFileFromAssets('plusImage.png');
+    _image.forEach((element) {
+      m[_image.indexOf(element).toString()] = element.toString();
+    });
+    m['100'] = plusImage.toString();
+    return m;
+  }
+
   Map<String, String> toMap(){
     return  {
+      "_id" : _id.toString(),
       "_title": _title,
       "_category": _category,
       "_image": _image.toString(),
