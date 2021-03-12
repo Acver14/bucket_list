@@ -24,7 +24,7 @@ class BucketClass{
     this._content = '';
     this._address = '';
     this._startDate = DateTime.now();
-    this._closingDate = DateTime.now();
+    this._closingDate = null;
     this._achievementDate = DateTime.now();
     this._importance = Importance.middle;
   }
@@ -56,6 +56,18 @@ class BucketClass{
     });
     m['100'] = plusImage.toString();
     return m;
+  }
+
+  getStartDate(){
+    return _startDate;
+  }
+
+  getClosingDate(){
+    return _closingDate;
+  }
+
+  setClosingDate(DateTime dt){
+    _closingDate = dt;
   }
 
   Map<String, String> toMap(){

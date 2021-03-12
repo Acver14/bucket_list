@@ -42,7 +42,7 @@ class SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
-    logger.d(fp.getUser());
+    logger.d(fp.getUser().uid);
     return Scaffold(
       key: _scaffoldKey,
       //appBar: AppBar(title: Text("Sign-In Page")),
