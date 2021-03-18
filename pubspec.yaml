@@ -49,6 +49,9 @@ dependencies:
   cloud_functions: ^0.4.1+4
   google_sign_in: ^4.4.1
 
+  flutter_rating_bar: ^4.0.0
+
+  loading_animations: ^2.2.0
   #button
   flutter_auth_buttons: ^0.8.0
   flutter_signin_button: ^1.0.0

@@ -1,11 +1,16 @@
+import 'package:bucket_list/method/popupMenu.dart';
+import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'constantClass/sizeConstant.dart';
 import 'dataClass/bucketDataClass.dart';
 import 'dataClass/categoryDataClass.dart';
 import 'method/printLog.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class AddBucketListPage extends StatefulWidget {
   AddBucketListPage({Key key, this.title}) : super(key: key);
@@ -16,13 +21,13 @@ class AddBucketListPage extends StatefulWidget {
 }
 
 class AddBucketListPageState extends State<AddBucketListPage> {
+  FirebaseProvider fp;
   BucketClass bucketData = new BucketClass();
   CategoryClass categoryData = new CategoryClass();
 
   TextEditingController _titleCon = new TextEditingController();
-  TextEditingController _categoryCon = new TextEditingController();
   TextEditingController _contentCon = new TextEditingController();
-  TextEditingController _importanceCon = new TextEditingController();
+  double _importanceCon = 3;
 
   var imageMap;
   var width_of_display;
@@ -38,6 +43,7 @@ class AddBucketListPageState extends State<AddBucketListPage> {
 
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     width_of_display = getDisplayWidth(context);
     return Scaffold(
       appBar: new AppBar(
@@ -139,7 +145,34 @@ class AddBucketListPageState extends State<AddBucketListPage> {
                 ),
                 Container(
                     width: width_of_display,
-                    height: box_height * 10,
+                    height: box_height,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: RatingBar.builder(
+                        initialRating: 3,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        updateOnDrag: true,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                          _importanceCon = rating;
+                          printLog(_importanceCon.toString());
+                        },
+                      ),
+                    )
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    width: width_of_display,
+                    height: box_height*10,
                     child: TextField(
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -165,7 +198,10 @@ class AddBucketListPageState extends State<AddBucketListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>addBucket(),
+        onPressed: () async {
+          await addBucket();
+          Navigator.pop(context);
+        },
         tooltip: 'addBucket',
         backgroundColor: Colors.black,
         child: Icon(
@@ -176,7 +212,14 @@ class AddBucketListPageState extends State<AddBucketListPage> {
     );
   }
 
-  addBucket(){
+  addBucket() async {
+    Firestore firestore = Firestore.instance;
+
+    bucketData.setData(DateTime.now().millisecondsSinceEpoch, dday, _titleCon.text, _contentCon.text, _importanceCon);
+
     printLog(bucketData.toString());
+    printLog(fp.getUser().uid);
+    await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+        .setData(bucketData.toMap());
   }
 }

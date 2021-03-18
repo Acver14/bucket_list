@@ -4,8 +4,8 @@ enum Sort {
   importance,
 }
 
-enum Importance {
-  low,
-  middle,
-  high
+enum State {
+  incomplete,
+  complete,
+  trash
 }

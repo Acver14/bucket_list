@@ -12,7 +12,9 @@ class BucketClass{
   DateTime _startDate;
   DateTime _closingDate;
   DateTime _achievementDate;
-  Importance _importance;
+  double _importance;
+  State _state = State.incomplete;
+
   static int count = 0;
 
   @override
@@ -26,7 +28,7 @@ class BucketClass{
     this._startDate = DateTime.now();
     this._closingDate = null;
     this._achievementDate = DateTime.now();
-    this._importance = Importance.middle;
+    this._importance = 3;
   }
 
   bool addImage(File new_image){
@@ -70,18 +72,31 @@ class BucketClass{
     _closingDate = dt;
   }
 
-  Map<String, String> toMap(){
+  setData(int id, DateTime d_day, String title, String content, double importance){
+    _id = id;
+    _closingDate = d_day;
+    _title = title;
+    _content = content;
+    _importance = importance;
+  }
+
+  getId() {
+    return _id;
+  }
+
+  Map<String, Object> toMap(){
     return  {
-      "_id" : _id.toString(),
+      "_id" : _id,
       "_title": _title,
       "_category": _category,
-      "_image": _image.toString(),
+      "_image": _image,
       "_content": _content,
       "_address": _address,
-      "_startDate": _startDate.toString(),
-      "_closingDate": _closingDate.toString(),
-      "_achievementDate" : _achievementDate.toString(),
-      "_importance": _importance.toString()
+      "_startDate": _startDate,
+      "_closingDate": _closingDate,
+      "_achievementDate" : _achievementDate,
+      "_importance": _importance,
+      "_state": _state
     };
   }
 

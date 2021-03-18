@@ -9,7 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="bucket_list"
         android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
