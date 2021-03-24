@@ -8,27 +8,38 @@ class BucketClass{
   String _category;
   List<File> _image;
   String _content;
+  String _review;
   String _address;
   DateTime _startDate;
   DateTime _closingDate;
   DateTime _achievementDate;
   double _importance;
-  State _state = State.incomplete;
+  BucketState _state = BucketState.incomplete;
 
   static int count = 0;
 
   @override
   BucketClass(){
-    this._id = count++;
     this._title = '';
     this._category = '';
     this._image = [];
     this._content = '';
+    this._review = '';
     this._address = '';
     this._startDate = DateTime.now();
     this._closingDate = null;
-    this._achievementDate = DateTime.now();
+    this._achievementDate = null;
     this._importance = 3;
+  }
+
+  @override
+  BucketClass.forModify(int id, String title, String content, DateTime startDate, DateTime closingDate, double  importance){
+    this._id = id;
+    this._title = title;
+    this._content = content;
+    this._startDate = startDate;
+    this._closingDate = closingDate;
+    this._importance = importance;
   }
 
   bool addImage(File new_image){
@@ -72,6 +83,18 @@ class BucketClass{
     _closingDate = dt;
   }
 
+  getId() {
+    return _id;
+  }
+
+  getContent(){
+    return _content;
+  }
+
+  getTitle(){
+    return _title;
+  }
+
   setData(int id, DateTime d_day, String title, String content, double importance){
     _id = id;
     _closingDate = d_day;
@@ -80,24 +103,56 @@ class BucketClass{
     _importance = importance;
   }
 
-  getId() {
-    return _id;
-  }
-
   Map<String, Object> toMap(){
-    return  {
-      "_id" : _id,
-      "_title": _title,
-      "_category": _category,
-      "_image": _image,
-      "_content": _content,
-      "_address": _address,
-      "_startDate": _startDate,
-      "_closingDate": _closingDate,
-      "_achievementDate" : _achievementDate,
-      "_importance": _importance,
-      "_state": _state
-    };
+    switch(_state){
+      case BucketState.incomplete:
+        return  {
+          "_id" : _id,
+          "_title": _title,
+          "_category": _category,
+          "_image": _image,
+          "_content": _content,
+          "_review": _review,
+          "_address": _address,
+          "_startDate": _startDate,
+          "_closingDate": _closingDate,
+          "_achievementDate" : _achievementDate,
+          "_importance": _importance,
+          "_state": 0
+        };
+        break;
+      case BucketState.complete:
+          return {
+            "_id" : _id,
+            "_title": _title,
+            "_category": _category,
+            "_image": _image,
+            "_content": _content,
+            "_review": _review,
+            "_address": _address,
+            "_startDate": _startDate,
+            "_closingDate": _closingDate,
+            "_achievementDate" : _achievementDate,
+            "_importance": _importance,
+            "_state": 1
+          };
+          break;
+      case BucketState.trash:
+        return  {
+          "_id" : _id,
+          "_title": _title,
+          "_category": _category,
+          "_image": _image,
+          "_content": _content,
+          "_review": _review,
+          "_address": _address,
+          "_startDate": _startDate,
+          "_closingDate": _closingDate,
+          "_achievementDate" : _achievementDate,
+          "_importance": _importance,
+          "_state": -1
+        };
+    }
   }
 
   @override

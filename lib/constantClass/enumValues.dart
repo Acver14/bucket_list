@@ -4,7 +4,7 @@ enum Sort {
   importance,
 }
 
-enum State {
+enum BucketState {
   incomplete,
   complete,
   trash

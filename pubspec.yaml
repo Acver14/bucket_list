@@ -56,6 +56,9 @@ dependencies:
   flutter_auth_buttons: ^0.8.0
   flutter_signin_button: ^1.0.0
 
+  #nav bar
+  google_nav_bar: ^5.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
