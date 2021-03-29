@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bucket_list/dataClass/bucketDataClass.dart';
 import 'package:bucket_list/method/printLog.dart';
 import 'package:bucket_list/provider/firebase_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'constantClass/enumValues.dart';
@@ -37,25 +38,32 @@ class BucketListPageState extends State<BucketListPage> {
 
   var dateFormat = DateFormat('yyyy : MM : dd');
 
+  AsyncSnapshot<QuerySnapshot> bucketListSnapshot;
+  QuerySnapshot bucketInfos;
+
   List<InkWell> bucketList;
+
+  List<InkWell> incompleteBucketList = [];
+  List<InkWell> completeBucketList = [];
+  List<InkWell> trashBucketList = [];
+
+  bool _loaded = false;
 
   BucketState _stateOfView = BucketState.incomplete;
 
   final ScrollController _infiniteController =
-      ScrollController(initialScrollOffset: 0.0);
-  AsyncSnapshot<QuerySnapshot> bucketListSnapshot;
-  QuerySnapshot bucketInfos;
+  ScrollController(initialScrollOffset: 0.0);
 
   _scrollListener() {
     if (_infiniteController.offset >=
-            _infiniteController.position.maxScrollExtent &&
+        _infiniteController.position.maxScrollExtent &&
         !_infiniteController.position.outOfRange) {
       setState(() {
         print(_infiniteController.position.maxScrollExtent);
       });
     }
     if (_infiniteController.offset <=
-            _infiniteController.position.minScrollExtent &&
+        _infiniteController.position.minScrollExtent &&
         !_infiniteController.position.outOfRange) {
       setState(() {});
     }
@@ -69,29 +77,22 @@ class BucketListPageState extends State<BucketListPage> {
   }
 
   Future<QuerySnapshot> loadBucketList() async {
-    switch(_sorting){
-      case Sort.importance:
-        return bucketInfos = await Firestore.instance
-            .collection(fp.getUser().uid)
-            .document('bucket_list')
-            .collection('buckets')
-            .orderBy('_importance', descending: true).getDocuments();
-        break;
-      case Sort.creationDate:
-        return bucketInfos = await Firestore.instance
-            .collection(fp.getUser().uid)
-            .document('bucket_list')
-            .collection('buckets')
-            .orderBy('_startDate', descending: true).getDocuments();
-        break;
-      case Sort.title:
-        return bucketInfos = await Firestore.instance
-            .collection(fp.getUser().uid)
-            .document('bucket_list')
-            .collection('buckets')
-            .orderBy('_title', descending: true).getDocuments();
-        break;
+    printLog(_loaded.toString());
+    if(!_loaded){
+      incompleteBucketList = [];
+      completeBucketList = [];
+      trashBucketList = [];
+      bucketInfos = await Firestore.instance
+          .collection(fp.getUser().uid)
+          .document('bucket_list')
+          .collection('buckets')
+          .orderBy('_importance', descending: true)
+          .getDocuments().then((value) {
+            _loaded = true;
+            return value;
+          });
     }
+    return bucketInfos;
   }
 
   @override
@@ -131,6 +132,7 @@ class BucketListPageState extends State<BucketListPage> {
                         onChanged: (value) async {
                           setState(() {
                             _sorting = value;
+                            _loaded = false;
                           });
                           await loadBucketList();
                         }),
@@ -155,22 +157,80 @@ class BucketListPageState extends State<BucketListPage> {
                       if (snapshot.data.documents.length > 0) {
                         bucketListSnapshot = snapshot;
                         getBucketList();
-                        return Expanded(
-                            child: Column(
-                              children: [
-                                new ListView.builder(
-                                  //reverse: true,
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  controller: _infiniteController,
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder: (context, index) {
-                                    return getBucketInfo(
-                                        index, snapshot.data.documents.length);
-                                  },
-                                )
-                              ],
-                            ));
+                        //switch 이용해서 분류
+                        switch(_stateOfView){
+                          case BucketState.incomplete:
+                            return Expanded(
+                                child: Column(
+                                  children: [
+                                    new ListView.builder(
+                                      //reverse: true,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      controller: _infiniteController,
+                                      itemCount: incompleteBucketList.length,
+                                      itemBuilder: (context, index) {
+                                        return getIncompleteBucketInfo(
+                                            index, incompleteBucketList.length);
+                                      },
+                                    )
+                                  ],
+                                ));
+                            break;
+                          case BucketState.complete:
+                            return Expanded(
+                                child: Column(
+                                  children: [
+                                    new ListView.builder(
+                                      //reverse: true,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      controller: _infiniteController,
+                                      itemCount: completeBucketList.length,
+                                      itemBuilder: (context, index) {
+                                        return getCompleteBucketInfo(
+                                            index, completeBucketList.length);
+                                      },
+                                    )
+                                  ],
+                                ));
+                            break;
+                          case BucketState.trash:
+                            return Expanded(
+                                child: Column(
+                                  children: [
+                                    new ListView.builder(
+                                      //reverse: true,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      controller: _infiniteController,
+                                      itemCount: trashBucketList.length,
+                                      itemBuilder: (context, index) {
+                                        return getTrashBucketInfo(
+                                            index, trashBucketList.length);
+                                      },
+                                    )
+                                  ],
+                                ));
+                            break;
+                          default:
+                            return Expanded(
+                                child: Column(
+                                  children: [
+                                    new ListView.builder(
+                                      //reverse: true,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      controller: _infiniteController,
+                                      itemCount: incompleteBucketList.length,
+                                      itemBuilder: (context, index) {
+                                        return getIncompleteBucketInfo(
+                                            index, incompleteBucketList.length);
+                                      },
+                                    )
+                                  ],
+                                ));
+                        }
                       } else {
                         return new Align(
                           alignment: Alignment.center,
@@ -186,7 +246,7 @@ class BucketListPageState extends State<BucketListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Route route =
-              MaterialPageRoute(builder: (context) => AddBucketListPage());
+          MaterialPageRoute(builder: (context) => AddBucketListPage());
           Navigator.push(context, route).then(refreshBucketList);
         },
         tooltip: 'addBucket',
@@ -196,55 +256,54 @@ class BucketListPageState extends State<BucketListPage> {
           color: Colors.white,
         ),
       ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
-            BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))
-          ]),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-              child: GNav(
-                  rippleColor: Colors.grey[300],
-                  hoverColor: Colors.grey[100],
-                  gap: 8,
-                  activeColor: Colors.black,
-                  iconSize: 24,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  duration: Duration(milliseconds: 400),
-                  tabBackgroundColor: Colors.grey[100],
-                  tabs: [
-                    GButton(
-                      icon: Icons.access_alarm,
-                      text: '미완료',
-                    ),
-                    GButton(
-                      icon: Icons.check_box,
-                      text: '완료',
-                    ),
-                    GButton(
-                      icon: Icons.delete,
-                      text: '휴지통',
-                    ),
-                  ],
-                  onTabChange: (index) {
-                    setState(() {
-                      switch(index){
-                        case 0:
-                          _stateOfView = BucketState.incomplete;
-                          break;
-                        case 1:
-                          _stateOfView = BucketState.complete;
-                          break;
-                        case 2:
-                          _stateOfView = BucketState.trash;
-                          break;
-                      }
-                      getBucketList();
-                    });
-                  }),
-            ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(color: Colors.white, boxShadow: [
+          BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))
+        ]),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+                rippleColor: Colors.grey[300],
+                hoverColor: Colors.grey[100],
+                gap: 8,
+                activeColor: Colors.black,
+                iconSize: 24,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                duration: Duration(milliseconds: 400),
+                tabBackgroundColor: Colors.grey[100],
+                tabs: [
+                  GButton(
+                    icon: Icons.access_alarm,
+                    text: '미완료',
+                  ),
+                  GButton(
+                    icon: Icons.check_box,
+                    text: '완료',
+                  ),
+                  GButton(
+                    icon: Icons.delete,
+                    text: '휴지통',
+                  ),
+                ],
+                onTabChange: (index) {
+                  setState(() {
+                    switch(index){
+                      case 0:
+                        _stateOfView = BucketState.incomplete;
+                        break;
+                      case 1:
+                        _stateOfView = BucketState.complete;
+                        break;
+                      case 2:
+                        _stateOfView = BucketState.trash;
+                        break;
+                    }
+                  });
+                }),
           ),
         ),
+      ),
     );
   }
 
@@ -254,16 +313,20 @@ class BucketListPageState extends State<BucketListPage> {
   }
 
   getBucketList() {
-    bucketList = bucketListSnapshot.data.documents.map((doc) {
-      var _state;
+    incompleteBucketList = [];
+    completeBucketList = [];
+    trashBucketList = [];
 
+    bucketListSnapshot.data.documents.map((doc) {
+      var _state;
+      printLog(doc['_state'].toString());
       switch(_stateOfView){
         case BucketState.incomplete:
           if (doc["_state"] == 0) {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
-            return new InkWell(
+            incompleteBucketList.add(new InkWell(
                 onTap: (){
                   Route route =
                   MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
@@ -285,7 +348,7 @@ class BucketListPageState extends State<BucketListPage> {
                           new Text('중요 : ${doc["_importance"].toString()}'),
                         ],
                       ),
-                    )));
+                    ))));
           }
           break;
         case BucketState.complete:
@@ -293,7 +356,7 @@ class BucketListPageState extends State<BucketListPage> {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
-            return new InkWell(
+            completeBucketList.add(new InkWell(
                 onTap: (){
                   Route route =
                   MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
@@ -315,7 +378,7 @@ class BucketListPageState extends State<BucketListPage> {
                           new Text('중요 : ${doc["_importance"].toString()}'),
                         ],
                       ),
-                    )));
+                    ))));
           }
           break;
         case BucketState.trash:
@@ -323,7 +386,7 @@ class BucketListPageState extends State<BucketListPage> {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
-            return new InkWell(
+            trashBucketList.add(new InkWell(
                 onTap: (){
                   Route route =
                   MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
@@ -345,17 +408,43 @@ class BucketListPageState extends State<BucketListPage> {
                           new Text('중요 : ${doc["_importance"].toString()}'),
                         ],
                       ),
-                    )));
+                    ))));
           }
           break;
       }
     }).toList();
-    printLog(bucketList.length.toString());
   }
 
   getBucketInfo(int index, int length) {
     try {
       return bucketList[length - index - 1];
+    } catch (Exception, e) {
+      print(e);
+      _infiniteController.jumpTo(0);
+    }
+  }
+
+  getIncompleteBucketInfo(int index, int length) {
+    try {
+      return incompleteBucketList[length - index - 1];
+    } catch (Exception, e) {
+      print(e);
+      _infiniteController.jumpTo(0);
+    }
+  }
+
+  getCompleteBucketInfo(int index, int length) {
+    try {
+      return completeBucketList[length - index - 1];
+    } catch (Exception, e) {
+      print(e);
+      _infiniteController.jumpTo(0);
+    }
+  }
+
+  getTrashBucketInfo(int index, int length) {
+    try {
+      return trashBucketList[length - index - 1];
     } catch (Exception, e) {
       print(e);
       _infiniteController.jumpTo(0);
