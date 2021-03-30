@@ -218,14 +218,14 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
   modifyBucket() async {
     Firestore firestore = Firestore.instance;
 
-    await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString()).
-        delete();
+    // await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString()).
+    //     delete();
 
     bucketData.setData(DateTime.now().millisecondsSinceEpoch, dday, _titleCon.text, _contentCon.text, _importanceCon);
 
     printLog(bucketData.toString());
     printLog(fp.getUser().uid);
     await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
-        .setData(bucketData.toMap());
+        .setData(bucketData.toMap(), merge: true);
   }
 }

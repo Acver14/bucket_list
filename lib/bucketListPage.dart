@@ -52,18 +52,18 @@ class BucketListPageState extends State<BucketListPage> {
   BucketState _stateOfView = BucketState.incomplete;
 
   final ScrollController _infiniteController =
-  ScrollController(initialScrollOffset: 0.0);
+      ScrollController(initialScrollOffset: 0.0);
 
   _scrollListener() {
     if (_infiniteController.offset >=
-        _infiniteController.position.maxScrollExtent &&
+            _infiniteController.position.maxScrollExtent &&
         !_infiniteController.position.outOfRange) {
       setState(() {
         print(_infiniteController.position.maxScrollExtent);
       });
     }
     if (_infiniteController.offset <=
-        _infiniteController.position.minScrollExtent &&
+            _infiniteController.position.minScrollExtent &&
         !_infiniteController.position.outOfRange) {
       setState(() {});
     }
@@ -78,7 +78,7 @@ class BucketListPageState extends State<BucketListPage> {
 
   Future<QuerySnapshot> loadBucketList() async {
     printLog(_loaded.toString());
-    if(!_loaded){
+    if (!_loaded) {
       incompleteBucketList = [];
       completeBucketList = [];
       trashBucketList = [];
@@ -87,10 +87,11 @@ class BucketListPageState extends State<BucketListPage> {
           .document('bucket_list')
           .collection('buckets')
           .orderBy('_importance', descending: true)
-          .getDocuments().then((value) {
-            _loaded = true;
-            return value;
-          });
+          .getDocuments()
+          .then((value) {
+        _loaded = true;
+        return value;
+      });
     }
     return bucketInfos;
   }
@@ -103,150 +104,152 @@ class BucketListPageState extends State<BucketListPage> {
     return Scaffold(
       body: Flex(
         direction: Axis.vertical,
-        children: [Expanded(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: statusBarHeight,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(left: 20, top: 10),
-                    height: 50,
-                    child: DropdownButton(
-                        value: _sorting,
-                        items: [
-                          DropdownMenuItem(
-                            child: Text("제목순"),
-                            value: Sort.title,
-                          ),
-                          DropdownMenuItem(
-                            child: Text("생성일순"),
-                            value: Sort.creationDate,
-                          ),
-                          DropdownMenuItem(
-                              child: Text("중요도순"), value: Sort.importance),
-                        ],
-                        onChanged: (value) async {
-                          setState(() {
-                            _sorting = value;
-                            _loaded = false;
-                          });
-                          await loadBucketList();
-                        }),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20, top: 10),
-                    height: 50,
-                    child: new IconButton(
-                        icon: new Icon(Icons.settings, size: 30),
-                        onPressed: () =>
-                            moveToPageBySlide(context, SettingPage())),
-                  ),
-                ],
-              ),
-              FutureBuilder(
-                  future: loadBucketList(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData) {
-                      return widgetLoading();
-                    } else {
-                      if (snapshot.data.documents.length > 0) {
-                        bucketListSnapshot = snapshot;
-                        getBucketList();
-                        //switch 이용해서 분류
-                        switch(_stateOfView){
-                          case BucketState.incomplete:
-                            return Expanded(
-                                child: Column(
-                                  children: [
-                                    new ListView.builder(
-                                      //reverse: true,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      controller: _infiniteController,
-                                      itemCount: incompleteBucketList.length,
-                                      itemBuilder: (context, index) {
-                                        return getIncompleteBucketInfo(
-                                            index, incompleteBucketList.length);
-                                      },
-                                    )
-                                  ],
-                                ));
-                            break;
-                          case BucketState.complete:
-                            return Expanded(
-                                child: Column(
-                                  children: [
-                                    new ListView.builder(
-                                      //reverse: true,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      controller: _infiniteController,
-                                      itemCount: completeBucketList.length,
-                                      itemBuilder: (context, index) {
-                                        return getCompleteBucketInfo(
-                                            index, completeBucketList.length);
-                                      },
-                                    )
-                                  ],
-                                ));
-                            break;
-                          case BucketState.trash:
-                            return Expanded(
-                                child: Column(
-                                  children: [
-                                    new ListView.builder(
-                                      //reverse: true,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      controller: _infiniteController,
-                                      itemCount: trashBucketList.length,
-                                      itemBuilder: (context, index) {
-                                        return getTrashBucketInfo(
-                                            index, trashBucketList.length);
-                                      },
-                                    )
-                                  ],
-                                ));
-                            break;
-                          default:
-                            return Expanded(
-                                child: Column(
-                                  children: [
-                                    new ListView.builder(
-                                      //reverse: true,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      controller: _infiniteController,
-                                      itemCount: incompleteBucketList.length,
-                                      itemBuilder: (context, index) {
-                                        return getIncompleteBucketInfo(
-                                            index, incompleteBucketList.length);
-                                      },
-                                    )
-                                  ],
-                                ));
-                        }
+        children: [
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: statusBarHeight,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 20, top: 10),
+                      height: 50,
+                      child: DropdownButton(
+                          value: _sorting,
+                          items: [
+                            DropdownMenuItem(
+                              child: Text("제목순"),
+                              value: Sort.title,
+                            ),
+                            DropdownMenuItem(
+                              child: Text("생성일순"),
+                              value: Sort.creationDate,
+                            ),
+                            DropdownMenuItem(
+                                child: Text("중요도순"), value: Sort.importance),
+                          ],
+                          onChanged: (value) async {
+                            setState(() {
+                              _sorting = value;
+                              _loaded = false;
+                            });
+                            await loadBucketList();
+                          }),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 20, top: 10),
+                      height: 50,
+                      child: new IconButton(
+                          icon: new Icon(Icons.settings, size: 30),
+                          onPressed: () =>
+                              moveToPageBySlide(context, SettingPage())),
+                    ),
+                  ],
+                ),
+                FutureBuilder(
+                    future: loadBucketList(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return widgetLoading();
                       } else {
-                        return new Align(
-                          alignment: Alignment.center,
-                          child: Center(child: Text("항목이 없습니다.")),
-                        );
+                        if (snapshot.data.documents.length > 0) {
+                          bucketListSnapshot = snapshot;
+                          getBucketList();
+                          //switch 이용해서 분류
+                          switch (_stateOfView) {
+                            case BucketState.incomplete:
+                              return Expanded(
+                                  child: Column(
+                                children: [
+                                  new ListView.builder(
+                                    //reverse: true,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    controller: _infiniteController,
+                                    itemCount: incompleteBucketList.length,
+                                    itemBuilder: (context, index) {
+                                      return getIncompleteBucketInfo(
+                                          index, incompleteBucketList.length);
+                                    },
+                                  )
+                                ],
+                              ));
+                              break;
+                            case BucketState.complete:
+                              return Expanded(
+                                  child: Column(
+                                children: [
+                                  new ListView.builder(
+                                    //reverse: true,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    controller: _infiniteController,
+                                    itemCount: completeBucketList.length,
+                                    itemBuilder: (context, index) {
+                                      return getCompleteBucketInfo(
+                                          index, completeBucketList.length);
+                                    },
+                                  )
+                                ],
+                              ));
+                              break;
+                            case BucketState.trash:
+                              return Expanded(
+                                  child: Column(
+                                children: [
+                                  new ListView.builder(
+                                    //reverse: true,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    controller: _infiniteController,
+                                    itemCount: trashBucketList.length,
+                                    itemBuilder: (context, index) {
+                                      return getTrashBucketInfo(
+                                          index, trashBucketList.length);
+                                    },
+                                  )
+                                ],
+                              ));
+                              break;
+                            default:
+                              return Expanded(
+                                  child: Column(
+                                children: [
+                                  new ListView.builder(
+                                    //reverse: true,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    controller: _infiniteController,
+                                    itemCount: incompleteBucketList.length,
+                                    itemBuilder: (context, index) {
+                                      return getIncompleteBucketInfo(
+                                          index, incompleteBucketList.length);
+                                    },
+                                  )
+                                ],
+                              ));
+                          }
+                        } else {
+                          return new Align(
+                            alignment: Alignment.center,
+                            child: Center(child: Text("항목이 없습니다.")),
+                          );
+                        }
                       }
-                    }
-                  }),
-            ],
-          ),
-        )],
+                    }),
+              ],
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Route route =
-          MaterialPageRoute(builder: (context) => AddBucketListPage());
+              MaterialPageRoute(builder: (context) => AddBucketListPage());
           Navigator.push(context, route).then(refreshBucketList);
         },
         tooltip: 'addBucket',
@@ -288,7 +291,7 @@ class BucketListPageState extends State<BucketListPage> {
                 ],
                 onTabChange: (index) {
                   setState(() {
-                    switch(index){
+                    switch (index) {
                       case 0:
                         _stateOfView = BucketState.incomplete;
                         break;
@@ -320,108 +323,141 @@ class BucketListPageState extends State<BucketListPage> {
     bucketListSnapshot.data.documents.map((doc) {
       var _state;
       printLog(doc['_state'].toString());
-      switch(_stateOfView){
+      switch (_stateOfView) {
         case BucketState.incomplete:
           if (doc["_state"] == 0) {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
-            BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
+            BucketClass bucket_data = new BucketClass.forModify(
+                doc['_id'],
+                doc['_title'],
+                doc['_content'],
+                doc['_startDate'].toDate(),
+                doc['_closingDate'] == null
+                    ? null
+                    : doc['_closingDate'].toDate(),
+                doc['_importance']);
             incompleteBucketList.add(new InkWell(
-                onTap: (){
-                  Route route =
-                  MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
+                onDoubleTap: () {
+                  printLog('버킷 휴지통으로 이동');
+                },
+                onLongPress: () {
+                  printLog('완료로 전환');
+                },
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => ModifyBucketListPage(
+                            bucket_data: bucket_data,
+                          ));
                   Navigator.push(context, route).then(refreshBucketList);
                 },
                 child: Card(
                     child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          new Text(doc["_title"]),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Text('작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
-                          new Text('종료일 : ${doc["_closingDate"]==null?'---- : -- : --':dateFormat.format(doc["_closingDate"].toDate())}'),
-                          new Text('중요 : ${doc["_importance"].toString()}'),
-                        ],
-                      ),
-                    ))));
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(doc["_title"]),
+                    ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(
+                          '작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
+                      new Text(
+                          '종료일 : ${doc["_closingDate"] == null ? '---- : -- : --' : dateFormat.format(doc["_closingDate"].toDate())}'),
+                      new Text('중요 : ${doc["_importance"].toString()}'),
+                    ],
+                  ),
+                ))));
           }
           break;
         case BucketState.complete:
           if (doc["_state"] == 1) {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
-            BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
+            BucketClass bucket_data = new BucketClass.forModify(
+                doc['_id'],
+                doc['_title'],
+                doc['_content'],
+                doc['_startDate'].toDate(),
+                doc['_closingDate'] == null
+                    ? null
+                    : doc['_closingDate'].toDate(),
+                doc['_importance']);
             completeBucketList.add(new InkWell(
-                onTap: (){
-                  Route route =
-                  MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => ModifyBucketListPage(
+                            bucket_data: bucket_data,
+                          ));
                   Navigator.push(context, route).then(refreshBucketList);
                 },
                 child: Card(
                     child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          new Text(doc["_title"]),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Text('작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
-                          new Text('종료일 : ${doc["_closingDate"]==null?'---- : -- : --':dateFormat.format(doc["_closingDate"].toDate())}'),
-                          new Text('중요 : ${doc["_importance"].toString()}'),
-                        ],
-                      ),
-                    ))));
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(doc["_title"]),
+                    ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(
+                          '작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
+                      new Text(
+                          '종료일 : ${doc["_closingDate"] == null ? '---- : -- : --' : dateFormat.format(doc["_closingDate"].toDate())}'),
+                      new Text('중요 : ${doc["_importance"].toString()}'),
+                    ],
+                  ),
+                ))));
           }
           break;
         case BucketState.trash:
           if (doc["_state"] == -1) {
             _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
-            BucketClass bucket_data = new BucketClass.forModify(doc['_id'], doc['_title'], doc['_content'], doc['_startDate'].toDate(), doc['_closingDate']==null?null:doc['_closingDate'].toDate(), doc['_importance']);
+            BucketClass bucket_data = new BucketClass.forModify(
+                doc['_id'],
+                doc['_title'],
+                doc['_content'],
+                doc['_startDate'].toDate(),
+                doc['_closingDate'] == null
+                    ? null
+                    : doc['_closingDate'].toDate(),
+                doc['_importance']);
             trashBucketList.add(new InkWell(
-                onTap: (){
-                  Route route =
-                  MaterialPageRoute(builder: (context) => ModifyBucketListPage(bucket_data: bucket_data,));
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => ModifyBucketListPage(
+                            bucket_data: bucket_data,
+                          ));
                   Navigator.push(context, route).then(refreshBucketList);
                 },
                 child: Card(
                     child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          new Text(doc["_title"]),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Text('작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
-                          new Text('종료일 : ${doc["_closingDate"]==null?'---- : -- : --':dateFormat.format(doc["_closingDate"].toDate())}'),
-                          new Text('중요 : ${doc["_importance"].toString()}'),
-                        ],
-                      ),
-                    ))));
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(doc["_title"]),
+                    ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(
+                          '작성일 : ${dateFormat.format(doc["_startDate"].toDate())}'),
+                      new Text(
+                          '종료일 : ${doc["_closingDate"] == null ? '---- : -- : --' : dateFormat.format(doc["_closingDate"].toDate())}'),
+                      new Text('중요 : ${doc["_importance"].toString()}'),
+                    ],
+                  ),
+                ))));
           }
           break;
       }
     }).toList();
-  }
-
-  getBucketInfo(int index, int length) {
-    try {
-      return bucketList[length - index - 1];
-    } catch (Exception, e) {
-      print(e);
-      _infiniteController.jumpTo(0);
-    }
   }
 
   getIncompleteBucketInfo(int index, int length) {
