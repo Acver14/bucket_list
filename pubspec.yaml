@@ -59,6 +59,8 @@ dependencies:
   #nav bar
   google_nav_bar: ^5.0.3
 
+  #toggle
+  flutter_switch: ^0.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

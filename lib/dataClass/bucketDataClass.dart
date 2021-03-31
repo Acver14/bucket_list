@@ -16,8 +16,6 @@ class BucketClass{
   double _importance;
   BucketState _state = BucketState.incomplete;
 
-  static int count = 0;
-
   @override
   BucketClass(){
     this._title = '';
