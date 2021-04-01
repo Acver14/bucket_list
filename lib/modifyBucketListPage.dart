@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+// import 'package:place_picker/place_picker.dart';
 import 'constantClass/sizeConstant.dart';
 import 'dataClass/bucketDataClass.dart';
 import 'dataClass/categoryDataClass.dart';
@@ -11,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'mapPickerPage.dart';
 
 class ModifyBucketListPage extends StatefulWidget {
   BucketClass bucket_data;
@@ -36,6 +42,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
   var date_format = DateFormat('yyyy년 MM월 dd일');
   var box_height = 40.0;
   var dday;
+  Position currentPosition;
 
   bool _mode = false;
   @override
@@ -45,7 +52,15 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     bucketData = widget.bucket_data;
     _titleCon = new TextEditingController(text: bucketData.getTitle());
     _contentCon = new TextEditingController(text: bucketData.getContent());
+    getCurrentPosition();
     super.initState();
+  }
+
+  Future<Position> getCurrentPosition() async {
+    currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high
+    );
+    printLog(currentPosition.latitude.toString());
   }
 
   @override
@@ -282,22 +297,86 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
               Container(
                   width: width_of_display,
                   height: box_height,
-                  child: TextField(
-                    controller: _addressCon,
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
+                  child: InkWell(
+                      onTap: () async {
+                        // printLog('log');
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => MapPickerPage(currentPosition: currentPosition,)
+                        //   )
+                        // );
+
+                        // LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         PlacePicker('Platform.isIOS?"AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"')));
+                        //
+                        // print(result);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlacePicker(
+                              apiKey: Platform.isIOS?"AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI",   // Put YOUR OWN KEY here.
+                              onPlacePicked: (result) {
+                                print(result.formattedAddress);
+                                Navigator.of(context).pop();
+                              },
+                              selectInitialPosition: true,
+                              usePlaceDetailSearch: true,
+                              usePinPointingSearch: true,
+                              region: 'ko',
+                              autocompleteLanguage: 'ko',
+
+                              // initialPosition: HomePage.kInitialPosition,
+                              useCurrentLocation: true,
+                              selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+                                printLog("state: $state, isSearchBarFocused: $isSearchBarFocused");
+                                return isSearchBarFocused
+                                    ? Container()
+                                    : FloatingCard(
+                                        bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+                                        leftPosition: 0.0,
+                                        rightPosition: 0.0,
+                                        width: 500,
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        child: state == SearchingState.Searching
+                                            ? Center(child: CircularProgressIndicator())
+                                            : RaisedButton(
+                                                child: Text("Pick Here"),
+                                                onPressed: () {
+                                                  // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
+                                                  //            this will override default 'Select here' Button.
+                                                  print("do something with [selectedPlace] data");
+                                                  print(selectedPlace.formattedAddress);
+                                                  _addressCon = new TextEditingController(text: selectedPlace.formattedAddress);
+                                                  Navigator.of(context).pop();
+                                                  setState(() {});
+                                                },
+                                              ),
+                                      );
+                              },
+                            ),
+                          ),
+                        );
+
+                      },
+                      child: TextField(
+                        enabled: false,
+                        controller: _addressCon,
+                        decoration: InputDecoration(
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)
+                            ),
+                            labelStyle: TextStyle(
+                                color: Colors.black
+                            ),
+                            labelText: '완료한 위치 (선택)'
                         ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        labelStyle: TextStyle(
-                            color: Colors.black
-                        ),
-                        labelText: '완료한 위치 (선택)'
-                    ),
-                    cursorColor: Colors.black,
-                  )
+                        cursorColor: Colors.black,
+                      )),
               ),
               SizedBox(
                 height: 10,
