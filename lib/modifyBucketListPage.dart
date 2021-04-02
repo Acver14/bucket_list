@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bucket_list/provider/firebase_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'mapPickerPage.dart';
+import 'widgetClass/image_card_list.dart';
 
 class ModifyBucketListPage extends StatefulWidget {
   BucketClass bucket_data;
@@ -30,12 +32,14 @@ class ModifyBucketListPage extends StatefulWidget {
 class ModifyBucketListPageState extends State<ModifyBucketListPage> {
   FirebaseProvider fp;
   BucketClass bucketData = new BucketClass();
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   TextEditingController _titleCon;
   TextEditingController _contentCon;
   TextEditingController _addressCon = new TextEditingController();
   TextEditingController _reviewCon = new TextEditingController();
   double _importanceCon = 3;
+  String plusImageUrl;
 
   var imageMap;
   var width_of_display;
@@ -53,6 +57,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     _titleCon = new TextEditingController(text: bucketData.getTitle());
     _contentCon = new TextEditingController(text: bucketData.getContent());
     getCurrentPosition();
+    getPlusImageUrl();
     super.initState();
   }
 
@@ -63,6 +68,11 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     printLog(currentPosition.latitude.toString());
   }
 
+  getPlusImageUrl() async {
+    plusImageUrl =
+    await _firebaseStorage.ref().child("plusImage.png").getDownloadURL();
+    printLog(plusImageUrl);
+  }
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
@@ -380,6 +390,23 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
               ),
               SizedBox(
                 height: 10,
+              ),
+              ImageCardList(
+                // The map allows both assets and http paths.
+                map: {
+                  "0": 'assets/naver_logo.png',
+                  "1": plusImageUrl
+                },
+                titleColor: Colors.transparent,
+                // Display/hide name tags.
+                displayNameTag: true,
+                // Build your onTap execution here…
+                onTap: (name, image) {
+                  printLog(image.toString());
+                  if(name == "0"){
+                    printLog('plus image tap');
+                  }
+                },
               ),
               SizedBox(
                 height: 10,
