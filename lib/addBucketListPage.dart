@@ -3,6 +3,7 @@ import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'constantClass/enumValues.dart';
 import 'constantClass/sizeConstant.dart';
 import 'dataClass/bucketDataClass.dart';
 import 'dataClass/categoryDataClass.dart';
@@ -215,7 +216,7 @@ class AddBucketListPageState extends State<AddBucketListPage> {
   addBucket() async {
     Firestore firestore = Firestore.instance;
 
-    bucketData.setData(DateTime.now().millisecondsSinceEpoch, dday, _titleCon.text, _contentCon.text, _importanceCon);
+    bucketData.setData(DateTime.now().millisecondsSinceEpoch, dday, _titleCon.text, _contentCon.text, _importanceCon, BucketState.incomplete);
 
     printLog(bucketData.toString());
     printLog(fp.getUser().uid);

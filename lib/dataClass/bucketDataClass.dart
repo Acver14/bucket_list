@@ -6,7 +6,7 @@ class BucketClass{
   int _id;
   String _title;
   String _category;
-  List<File> _image;
+  List<dynamic> _image;
   String _content;
   String _review;
   String _address;
@@ -38,14 +38,6 @@ class BucketClass{
     this._startDate = startDate;
     this._closingDate = closingDate;
     this._importance = importance;
-  }
-
-  bool addImage(File new_image){
-    if(new_image != null){
-      _image.add(new_image);
-      return true;
-    }
-    else return false;
   }
 
   bool existImage(){
@@ -93,12 +85,30 @@ class BucketClass{
     return _title;
   }
 
-  setData(int id, DateTime d_day, String title, String content, double importance){
-    _id = id;
-    _closingDate = d_day;
-    _title = title;
-    _content = content;
-    _importance = importance;
+  setData(int id, DateTime d_day, String title, String content, double importance, BucketState state,
+      {List<dynamic> image, String review, String address, DateTime achievementDate})
+  {
+    switch(state){
+      case BucketState.incomplete:
+        _id = id;
+        _closingDate = d_day;
+        _title = title;
+        _content = content;
+        _importance = importance;
+        _state = state;
+        break;
+      case BucketState.complete:
+        _id = id;
+        _closingDate = d_day;
+        _title = title;
+        _content = content;
+        _importance = importance;
+        _state = state;
+        _image = image;
+        _review = review;
+        _address = address;
+        _achievementDate = achievementDate;
+    }
   }
 
   Map<String, Object> toMap(){

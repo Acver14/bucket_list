@@ -95,6 +95,23 @@ class BucketListPageState extends State<BucketListPage> {
     }
     return bucketInfos;
   }
+  Future<QuerySnapshot> refreshBucketList() async {
+    printLog(_loaded.toString());
+      incompleteBucketList = [];
+      completeBucketList = [];
+      trashBucketList = [];
+      bucketInfos = await Firestore.instance
+          .collection(fp.getUser().uid)
+          .document('bucket_list')
+          .collection('buckets')
+          .orderBy('_importance', descending: true)
+          .getDocuments()
+          .then((value) {
+        _loaded = true;
+        return value;
+      });
+    return bucketInfos;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,8 +198,7 @@ class BucketListPageState extends State<BucketListPage> {
                               break;
                             case BucketState.complete:
                               return Expanded(
-                                  child: Column(
-                                children: [
+                                  child:
                                   new ListView.builder(
                                     //reverse: true,
                                     scrollDirection: Axis.vertical,
@@ -194,14 +210,11 @@ class BucketListPageState extends State<BucketListPage> {
                                           index, completeBucketList.length);
                                     },
                                   )
-                                ],
-                              ));
+                              );
                               break;
                             case BucketState.trash:
                               return Expanded(
-                                  child: Column(
-                                children: [
-                                  new ListView.builder(
+                                  child: new ListView.builder(
                                     //reverse: true,
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
@@ -211,15 +224,11 @@ class BucketListPageState extends State<BucketListPage> {
                                       return getTrashBucketInfo(
                                           index, trashBucketList.length);
                                     },
-                                  )
-                                ],
-                              ));
+                                  ));
                               break;
                             default:
                               return Expanded(
-                                  child: Column(
-                                children: [
-                                  new ListView.builder(
+                                  child: new ListView.builder(
                                     //reverse: true,
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
@@ -229,9 +238,7 @@ class BucketListPageState extends State<BucketListPage> {
                                       return getIncompleteBucketInfo(
                                           index, incompleteBucketList.length);
                                     },
-                                  )
-                                ],
-                              ));
+                                  ));
                           }
                         } else {
                           return new Align(
@@ -250,7 +257,7 @@ class BucketListPageState extends State<BucketListPage> {
         onPressed: () {
           Route route =
               MaterialPageRoute(builder: (context) => AddBucketListPage());
-          Navigator.push(context, route).then(refreshBucketList);
+          Navigator.push(context, route).then(refreshBucketListPage);
         },
         tooltip: 'addBucket',
         backgroundColor: Colors.black,
@@ -310,8 +317,8 @@ class BucketListPageState extends State<BucketListPage> {
     );
   }
 
-  FutureOr refreshBucketList(dynamic value) async {
-    await loadBucketList();
+  FutureOr refreshBucketListPage(dynamic value) async {
+    await refreshBucketList();
     setState(() {});
   }
 
@@ -338,18 +345,12 @@ class BucketListPageState extends State<BucketListPage> {
                     : doc['_closingDate'].toDate(),
                 doc['_importance']);
             incompleteBucketList.add(new InkWell(
-                onDoubleTap: () {
-                  printLog('버킷 휴지통으로 이동');
-                },
-                onLongPress: () {
-                  printLog('완료로 전환');
-                },
                 onTap: () {
                   Route route = MaterialPageRoute(
                       builder: (context) => ModifyBucketListPage(
                             bucket_data: bucket_data,
                           ));
-                  Navigator.push(context, route).then(refreshBucketList);
+                  Navigator.push(context, route).then(refreshBucketListPage);
                 },
                 child: Card(
                     child: ListTile(
@@ -374,7 +375,6 @@ class BucketListPageState extends State<BucketListPage> {
           break;
         case BucketState.complete:
           if (doc["_state"] == 1) {
-            _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(
                 doc['_id'],
@@ -391,7 +391,7 @@ class BucketListPageState extends State<BucketListPage> {
                       builder: (context) => ModifyBucketListPage(
                             bucket_data: bucket_data,
                           ));
-                  Navigator.push(context, route).then(refreshBucketList);
+                  Navigator.push(context, route).then(refreshBucketListPage);
                 },
                 child: Card(
                     child: ListTile(
@@ -416,7 +416,6 @@ class BucketListPageState extends State<BucketListPage> {
           break;
         case BucketState.trash:
           if (doc["_state"] == -1) {
-            _state = "미완료";
             printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(
                 doc['_id'],
@@ -433,7 +432,7 @@ class BucketListPageState extends State<BucketListPage> {
                       builder: (context) => ModifyBucketListPage(
                             bucket_data: bucket_data,
                           ));
-                  Navigator.push(context, route).then(refreshBucketList);
+                  Navigator.push(context, route).then(refreshBucketListPage);
                 },
                 child: Card(
                     child: ListTile(

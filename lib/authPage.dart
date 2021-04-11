@@ -21,8 +21,8 @@ class AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
-    logger.d("user: ${fp.getUser()}");
     if (fp.getUser() != null && fp.getUser().isEmailVerified == true) {
+      logger.d("user: ${fp.getUser().email}");
       return BucketListPage();
     } else {
       return SignUpPage();

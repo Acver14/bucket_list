@@ -6,9 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:place_picker/place_picker.dart';
+import 'constantClass/enumValues.dart';
 import 'constantClass/sizeConstant.dart';
 import 'dataClass/bucketDataClass.dart';
 import 'dataClass/categoryDataClass.dart';
@@ -19,6 +22,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'mapPickerPage.dart';
 import 'widgetClass/image_card_list.dart';
+
+import "dart:convert";
+import "package:http/http.dart" as http;
+import 'package:sortedmap/sortedmap.dart';
+import 'package:path/path.dart' as Path;
 
 class ModifyBucketListPage extends StatefulWidget {
   BucketClass bucket_data;
@@ -39,9 +47,16 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
   TextEditingController _addressCon = new TextEditingController();
   TextEditingController _reviewCon = new TextEditingController();
   double _importanceCon = 3;
+  var _achievementDate = DateTime.now();
   String plusImageUrl;
 
-  var imageMap;
+  var picker = ImagePicker();
+  Map<String, String> _imageListMap = new SortedMap(Ordering.byKey());
+  var _imageList = [];
+  var _imageUrlList = [];
+  int _cntForImageList = 0;
+
+
   var width_of_display;
   var date_format = DateFormat('yyyy년 MM월 dd일');
   var box_height = 40.0;
@@ -65,14 +80,68 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high
     );
-    printLog(currentPosition.latitude.toString());
+
+    var response = await http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&language=ko&key=${Platform.isIOS?"AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"}");
+    String _currentAddress = json.decode(response.body)["results"][0]["formatted_address"];
+    printLog(_currentAddress);
+
+    _addressCon = new TextEditingController(text: _currentAddress);
   }
 
   getPlusImageUrl() async {
     plusImageUrl =
     await _firebaseStorage.ref().child("plusImage.png").getDownloadURL();
-    printLog(plusImageUrl);
+
+    _imageListMap.addAll({
+      "x": plusImageUrl
+    });
   }
+
+  addImageToList() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    _imageListMap.addAll({
+      _cntForImageList.toString() : File(pickedFile.path).path
+    });
+    _imageList.add(File(pickedFile.path));
+
+    _cntForImageList++;
+  }
+
+  removeImageToList(String key){
+    _imageListMap.remove(key);
+    _imageList.removeAt(int.parse(key));
+  }
+
+  uploadImage(String key, File _image) async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('${fp.getUser().uid}/${bucketData.getId()}/${key}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+  }
+
+  uploadImageList(List _imageList) async {
+    _imageList.forEach((_image) {
+      uploadImage(_imageList.indexOf(_image).toString(), _image);
+    });
+  }
+
+  downloadImage(String key) async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('${fp.getUser().uid}/${bucketData.getId()}/${key}');
+    return await storageReference.getDownloadURL();
+  }
+
+  downloadImageList() async {
+    for(int i = 0; i < _cntForImageList; i++){
+      _imageUrlList.add(await downloadImage(i.toString()));
+    }
+    printLog(_imageUrlList.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
@@ -114,10 +183,10 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
       body: _mode==false?widgetForModify():widgetForComplete(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await modifyBucket();
+          _mode==false? await modifyBucket():await completeBucket();
           Navigator.pop(context);
         },
-        tooltip: 'addBucket',
+        tooltip: 'modify or complete Bucket',
         backgroundColor: Colors.black,
         child: Icon(
           _mode==false?Icons.add:Icons.check,
@@ -298,7 +367,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black)
                           ),
-                          labelText: '완료일 : ${date_format.format(DateTime.now())}'
+                          labelText: '완료일 : ${date_format.format(_achievementDate)}'
                       ),
                       cursorColor: Colors.black,
                     )
@@ -309,19 +378,6 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
                   height: box_height,
                   child: InkWell(
                       onTap: () async {
-                        // printLog('log');
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => MapPickerPage(currentPosition: currentPosition,)
-                        //   )
-                        // );
-
-                        // LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         PlacePicker('Platform.isIOS?"AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"')));
-                        //
-                        // print(result);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -392,19 +448,20 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
                 height: 10,
               ),
               ImageCardList(
-                // The map allows both assets and http paths.
-                map: {
-                  "0": 'assets/naver_logo.png',
-                  "1": plusImageUrl
-                },
+                map: _imageListMap,
                 titleColor: Colors.transparent,
-                // Display/hide name tags.
                 displayNameTag: true,
-                // Build your onTap execution here…
-                onTap: (name, image) {
+                reverse: true,
+
+                onTap: (name, image) async {
                   printLog(image.toString());
-                  if(name == "0"){
-                    printLog('plus image tap');
+                  if(name == "x"){
+                    var _path = await addImageToList();
+                    setState(() {});
+                    printLog(_imageListMap.toString());
+                  }else{
+                    removeImageToList(name);
+                    setState(() {});
                   }
                 },
               ),
@@ -446,11 +503,58 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     // await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString()).
     //     delete();
 
-    bucketData.setData(DateTime.now().millisecondsSinceEpoch, dday, _titleCon.text, _contentCon.text, _importanceCon);
+    bucketData.setData(bucketData.getId(), dday, _titleCon.text, _contentCon.text, _importanceCon, BucketState.incomplete);
 
     printLog(bucketData.toString());
     printLog(fp.getUser().uid);
     await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
         .setData(bucketData.toMap(), merge: true);
+  }
+
+  completeBucket() async {
+    Firestore firestore = Firestore.instance;
+
+    final GlobalKey _LoaderDialog = new GlobalKey();
+    LoaderDialog.showLoadingDialog(context, _LoaderDialog);
+
+    await uploadImageList(_imageList);
+    await downloadImageList();
+
+    bucketData.setData(bucketData.getId(), dday, _titleCon.text, _contentCon.text, _importanceCon, BucketState.complete,
+        image: _imageUrlList, review: _reviewCon.text, address: _addressCon.text, achievementDate: _achievementDate);
+
+    printLog(bucketData.toString());
+
+    await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+        .setData(bucketData.toMap(), merge: true);
+    Navigator.of(_LoaderDialog.currentContext,rootNavigator: true).pop();
+  }
+}
+class LoaderDialog {
+
+  static Future<void> showLoadingDialog(BuildContext context, GlobalKey key) async {
+    var wid = MediaQuery.of(context).size.width / 2;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(left: 130 , right: 130),
+          child: Dialog(
+              key: key,
+              backgroundColor: Colors.white,
+              child: Container(
+                width: 60.0,
+                height: 60.0,
+                child:  Image.asset(
+                  'assets/loading.gif',
+                  height: 60,
+                  width: 60,
+                ),
+              )
+          ),
+        );
+      },
+    );
   }
 }
