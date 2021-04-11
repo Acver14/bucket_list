@@ -119,7 +119,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
         .child('${fp.getUser().uid}/${bucketData.getId()}/${key}');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
-    print('File Uploaded');
+    print('File Uploaded: '  + key);
   }
 
   uploadImageList(List _imageList) async {

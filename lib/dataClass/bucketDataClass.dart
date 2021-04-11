@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bucket_list/constantClass/enumValues.dart';
 import 'package:bucket_list/method/imageConveter.dart';
+import 'package:bucket_list/method/printLog.dart';
 
 class BucketClass{
   int _id;
@@ -51,14 +52,18 @@ class BucketClass{
     else return -1;
   }
 
-  imageListToMap() async {
-    Map<String, String> m = new Map();
-    File plusImage = await getImageFileFromAssets('plusImage.png');
-    _image.forEach((element) {
-      m[_image.indexOf(element).toString()] = element.toString();
-    });
-    m['100'] = plusImage.toString();
-    return m;
+  imageListToMap() {
+    if(_image == null){
+      return {
+        "0": "gs://bucket-list-38be8.appspot.com/blank.png"
+      };
+    }else{
+      Map<String, String> m = new Map();
+      _image.forEach((element) {
+        m[_image.indexOf(element).toString()] = element.toString();
+      });
+      return m;
+    }
   }
 
   getStartDate(){
@@ -83,6 +88,10 @@ class BucketClass{
 
   getTitle(){
     return _title;
+  }
+
+  getReview(){
+    return _review;
   }
 
   setData(int id, DateTime d_day, String title, String content, double importance, BucketState state,

@@ -16,6 +16,7 @@ import 'method/pageMoveMethod.dart';
 import 'settingPage.dart';
 import 'addBucketListPage.dart';
 import 'modifyBucketListPage.dart';
+import 'completedBucketPage.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -171,7 +172,9 @@ class BucketListPageState extends State<BucketListPage> {
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
-                        return widgetLoading();
+                        return Container(
+                          child: widgetLoading(),
+                        );
                       } else {
                         if (snapshot.data.documents.length > 0) {
                           bucketListSnapshot = snapshot;
@@ -388,10 +391,10 @@ class BucketListPageState extends State<BucketListPage> {
             completeBucketList.add(new InkWell(
                 onTap: () {
                   Route route = MaterialPageRoute(
-                      builder: (context) => ModifyBucketListPage(
+                      builder: (context) => CompletedBucketListPage(
                             bucket_data: bucket_data,
                           ));
-                  Navigator.push(context, route).then(refreshBucketListPage);
+                  Navigator.push(context, route);
                 },
                 child: Card(
                     child: ListTile(
@@ -426,7 +429,8 @@ class BucketListPageState extends State<BucketListPage> {
                     ? null
                     : doc['_closingDate'].toDate(),
                 doc['_importance']);
-            trashBucketList.add(new InkWell(
+            trashBucketList.add(
+                new InkWell(
                 onTap: () {
                   Route route = MaterialPageRoute(
                       builder: (context) => ModifyBucketListPage(
