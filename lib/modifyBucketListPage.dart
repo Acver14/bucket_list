@@ -104,11 +104,12 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
       _cntForImageList.toString() : File(pickedFile.path).path
     });
     _imageList.add(File(pickedFile.path));
-
+    printLog(_imageListMap.toString());
     _cntForImageList++;
   }
 
   removeImageToList(String key){
+    printLog(key);
     _imageListMap.remove(key);
     _imageList.removeAt(int.parse(key));
   }
@@ -455,6 +456,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
 
                 onTap: (name, image) async {
                   printLog(image.toString());
+                  printLog(name);
                   if(name == "x"){
                     var _path = await addImageToList();
                     setState(() {});

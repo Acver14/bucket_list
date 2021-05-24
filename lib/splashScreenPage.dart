@@ -1,3 +1,5 @@
+import 'package:bucket_list/method/localAuthMethod.dart';
+import 'package:bucket_list/method/printLog.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:bucket_list/authPage.dart';
@@ -20,8 +22,13 @@ class SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
+    var _localAuth;
+    loadLocalAuth().then((ret){
+      _localAuth = ret;
+    });
     Timer(Duration(milliseconds: 1500), () {
-        moveToPageBySlide(context, AuthPage());
+      printLog(_localAuth.toString());
+        Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => AuthPage(localAuth: _localAuth,)));
     });
   }
 

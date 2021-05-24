@@ -77,5 +77,20 @@
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>This app needs access to location when open and in the background.</string>
 
+	<key>NSCameraUsageDescription</key>
+	<string>To take pictures of your trash</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To check your access</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To bring your picture</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>NSFaceIDUsageDescription</key>
+    <string>Why is my app authenticating using face id?</string>
 </dict>
 </plist>

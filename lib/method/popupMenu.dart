@@ -47,6 +47,68 @@ Future<String> popupTextField(BuildContext context) async {
   return _input.text;
 }
 
+Future<void> popupText(BuildContext context, String text) async {
+  await PopupBox.showPopupBox(
+      context: context,
+      willDisplayWidget: Column(
+        children: <Widget>[
+          Text(
+            text,
+            style: TextStyle(fontSize: 40, color: Colors.black),
+          ),
+        ],
+      ));
+}
+
+
+Future<bool> popupTextAndButton(BuildContext context, String text) async {
+  bool _answer = false;
+  await PopupBox.showPopupBox(
+      context: context,
+      button: Row(
+        children: [
+          MaterialButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: Colors.black,
+            child: Text(
+              '취소',
+              style: TextStyle(fontSize: 12),
+            ),
+            onPressed: () {
+              _answer = false;
+              Navigator.of(context).pop();
+            },
+          ),
+          SizedBox(width: 10),
+          MaterialButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: Colors.black,
+            child: Text(
+              '확인',
+              style: TextStyle(fontSize: 12),
+            ),
+            onPressed: () {
+              _answer = true;
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+      willDisplayWidget: Column(
+        children: <Widget>[
+          Text(
+            text,
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          ),
+        ],
+      ));
+  return _answer;
+}
+
 Future<String> popupForIncompleteBucketData(BuildContext context) async {
   TextEditingController _input = new TextEditingController();
   await PopupBox.showPopupBox(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bucket_list/dataClass/bucketDataClass.dart';
+import 'package:bucket_list/method/popupMenu.dart';
 import 'package:bucket_list/method/printLog.dart';
 import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,9 +34,10 @@ class BucketListPage extends StatefulWidget {
   BucketListPageState createState() => BucketListPageState();
 }
 
+FirebaseProvider fp;
+
 class BucketListPageState extends State<BucketListPage> {
   Sort _sorting = Sort.title;
-  FirebaseProvider fp;
 
   var dateFormat = DateFormat('yyyy : MM : dd');
 
@@ -78,7 +80,6 @@ class BucketListPageState extends State<BucketListPage> {
   }
 
   Future<QuerySnapshot> loadBucketList() async {
-    printLog(_loaded.toString());
     if (!_loaded) {
       incompleteBucketList = [];
       completeBucketList = [];
@@ -332,12 +333,10 @@ class BucketListPageState extends State<BucketListPage> {
 
     bucketListSnapshot.data.documents.map((doc) {
       var _state;
-      printLog(doc['_state'].toString());
       switch (_stateOfView) {
         case BucketState.incomplete:
           if (doc["_state"] == 0) {
             _state = "미완료";
-            printLog(doc['_startDate'].toDate().toString());
             BucketClass bucket_data = new BucketClass.forModify(
                 doc['_id'],
                 doc['_title'],
@@ -354,6 +353,14 @@ class BucketListPageState extends State<BucketListPage> {
                             bucket_data: bucket_data,
                           ));
                   Navigator.push(context, route).then(refreshBucketListPage);
+                },
+                onLongPress: () async {
+                  if(await popupTextAndButton(context, '버킷리스트를 휴지통으로 옮기시겠습니까?')){
+                    goToTrashPressedBucket(bucket_data);
+                    await refreshBucketList();
+                    setState(() {});
+                  }
+                  printLog('데이터 삭제');
                 },
                 child: Card(
                     child: ListTile(
@@ -431,13 +438,20 @@ class BucketListPageState extends State<BucketListPage> {
                 doc['_importance']);
             trashBucketList.add(
                 new InkWell(
-                onTap: () {
-                  Route route = MaterialPageRoute(
-                      builder: (context) => ModifyBucketListPage(
-                            bucket_data: bucket_data,
-                          ));
-                  Navigator.push(context, route).then(refreshBucketListPage);
+                onTap: () async {
+                  if(await popupTextAndButton(context, '버킷리스트를 복원하시겠습니까?')){
+                    goToIncompletedPressedBucket(bucket_data);
+                    await refreshBucketList();
+                    setState(() {});
+                  }
                 },
+                    onLongPress:()async {
+                      if(await popupTextAndButton(context, '버킷리스트를 완전히 삭제하시겠습니까?')){
+                        removeBucket(bucket_data);
+                        await refreshBucketList();
+                        setState(() {});
+                      }
+                    },
                 child: Card(
                     child: ListTile(
                   title: Row(
@@ -489,4 +503,30 @@ class BucketListPageState extends State<BucketListPage> {
       _infiniteController.jumpTo(0);
     }
   }
+}
+
+goToTrashPressedBucket(BucketClass bucketData) async {
+  Firestore firestore = Firestore.instance;
+
+  await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+      .setData({
+    "_state" : -1
+  }, merge: true);
+}
+
+
+goToIncompletedPressedBucket(BucketClass bucketData) async {
+  Firestore firestore = Firestore.instance;
+
+  await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+      .setData({
+    "_state" : 0
+  }, merge: true);
+}
+
+removeBucket(BucketClass bucketData) async{
+  Firestore firestore = Firestore.instance;
+
+  await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+      .delete();
 }
