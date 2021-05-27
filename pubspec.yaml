@@ -43,9 +43,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
-  # 지문 인증 및 페이스 아이디
-  local_auth_device_credentials:
-
   #firestore
   firebase_core: ^0.4.1
 

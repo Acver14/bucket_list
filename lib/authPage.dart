@@ -1,3 +1,4 @@
+import 'package:bucket_list/method/printLog.dart';
 import 'package:bucket_list/secondAuthPage.dart';
 import 'package:flutter/material.dart';
 import 'package:bucket_list/provider/firebase_provider.dart';
@@ -33,6 +34,7 @@ class AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
     if (fp.getUser() != null && fp.getUser().isEmailVerified == true) {
+      printLog(fp.getUser().email);
       if(_localAuth){
         return SecondAuthPage();
       }else {
@@ -42,4 +44,4 @@ class AuthPageState extends State<AuthPage> {
       return SignUpPage();
     }
   }
-}
+}ㄴ

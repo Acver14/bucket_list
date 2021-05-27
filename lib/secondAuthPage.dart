@@ -1,6 +1,7 @@
 import 'package:bucket_list/bucketListPage.dart';
 import 'package:bucket_list/widgetClass/loadingWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 class SecondAuthPage extends StatefulWidget {
@@ -15,10 +16,12 @@ class SecondAuthPageState extends State<SecondAuthPage> {
   bool _isLocalAuth;
   String _authorized;
 
+  static final _auth = LocalAuthentication();
+
   @override
   initState() {
     super.initState();
-    checkBio();
+    authenticate();
   }
 
   checkBio() async {
@@ -31,7 +34,10 @@ class SecondAuthPageState extends State<SecondAuthPage> {
     bool authenticated = false;
     authenticated = await LocalAuthentication()
         .authenticateWithBiometrics(
-        localizedReason: '지문 인식을 진행해주십시오.');
+        localizedReason: '지문 인식을 진행해주십시오.',
+        useErrorDialogs: true,
+        stickyAuth: true
+    );
     setState(() {
       _authorized = authenticated ? 'Authorized' : 'Not Authorized';
     });
@@ -39,11 +45,34 @@ class SecondAuthPageState extends State<SecondAuthPage> {
     return authenticated;
   }
 
+  static Future<bool> hasBiometrics() async{
+    try {
+      return await _auth.canCheckBiometrics;
+    } on PlatformException catch (e){
+      return false;
+    }
+  }
+
+  static Future<bool> authenticate() async{
+    final isAvailable = await hasBiometrics();
+
+    if(!isAvailable) return false;
+    try{
+      return await _auth.authenticateWithBiometrics(
+          localizedReason: '지문 인식을 진행해주십시오.',
+          useErrorDialogs: true,
+          stickyAuth: true
+      );
+    } on PlatformException catch (e){
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: checkBio(),
+          future: authenticate(),
           builder: (BuildContext context,
               AsyncSnapshot<bool> auth){
             if(!auth.hasData){
