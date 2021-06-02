@@ -28,8 +28,6 @@ class AuthPageState extends State<AuthPage> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
@@ -44,4 +42,4 @@ class AuthPageState extends State<AuthPage> {
       return SignUpPage();
     }
   }
-}ㄴ
+}

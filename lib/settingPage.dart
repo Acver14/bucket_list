@@ -16,6 +16,7 @@ import 'method/popupMenu.dart';
 import 'splashScreenPage.dart';
 import 'method/launchUrl.dart';
 import 'method/localAuthMethod.dart';
+import 'pinputPage.dart';
 
 class SettingPage extends StatefulWidget {
   SettingPage({Key key, this.title}) : super(key: key);
@@ -30,7 +31,7 @@ class SettingPageState extends State<SettingPage> {
   var userInfo = null;
   var _loaded = false;
   var picker = ImagePicker();
-  bool localAuth = false;
+  bool localAuth;
   SharedPreferences prefsLocalAuth;
   var profilePath = '';
 
@@ -47,11 +48,13 @@ class SettingPageState extends State<SettingPage> {
     }
     printLog(userInfo);
 
-    localAuth = await loadLocalAuth();
     return userInfo;
   }
 
   initState(){
+    loadLocalAuth().then((ret){
+      localAuth = ret;
+    });
     super.initState();
   }
 
@@ -65,7 +68,6 @@ class SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
-    printLog(localAuth.toString());
     return Scaffold(
       body: Column(
         children: [
@@ -82,11 +84,11 @@ class SettingPageState extends State<SettingPage> {
               child: new IconButton(icon: new Icon(Icons.logout),
                 onPressed: () async {
                   if(await popupTextAndButton(context, '로그아웃 하시겠습니까?')){
-                    await fp.signOut();
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     await prefs.clear();
                     Navigator.pop(context);
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SplashScreenPage()));
+                    await fp.signOut();
                   }
                 },
               )
@@ -102,143 +104,156 @@ class SettingPageState extends State<SettingPage> {
                 );
               }
               else{
-                  return new Column(
-                    children: [
-                      new Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: new Row(
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: InkWell(
-                                    child: profilePath==''?
-                                    CircleAvatar(
-                                      foregroundColor: Colors.black,
-                                    ):ClipOval(
-                                      child: profilePath.contains('http')?CachedNetworkImage(
-                                        height: 100,
-                                        width: 100,
-                                        fit: BoxFit.fill,
-                                        imageUrl:
-                                        profilePath,
-                                        placeholder: (context, url) => CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),),
-                                        errorWidget: (context, url, error) => Icon(Icons.error),
-                                      ):Image.file(File(profilePath),fit: BoxFit.cover,),
+                  try{
+                    return new Column(
+                      children: [
+                        new Card(
+                            child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: new Row(
+                                children: [
+                                  SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: InkWell(
+                                      child: profilePath==''?
+                                      CircleAvatar(
+                                        foregroundColor: Colors.black,
+                                      ):ClipOval(
+                                        child: profilePath.contains('http')?CachedNetworkImage(
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.fill,
+                                          imageUrl:
+                                          profilePath,
+                                          placeholder: (context, url) => CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                        ):Image.file(File(profilePath),fit: BoxFit.cover,),
+                                      ),
+                                      onTap: () async {
+                                        await uploadProfile();
+                                      },
                                     ),
-                                    onTap: () async {
-                                      await uploadProfile();
-                                    },
                                   ),
-                                ),
-                                SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('별명 : ' + userInfo['nickName']),
-                                    Text('이메일 : ' + fp.getUser().email??'이메일을 찾을 수 없습니다.')
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                      ),
-                      new Card(
-                        child : Row(
+                                  SizedBox(width: 20),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('별명 : ' + userInfo['nickName']),
+                                      Text('이메일 : ' + fp.getUser().email??'이메일을 찾을 수 없습니다.')
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                        ),
+                        new Card(
+                          child : Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text('간편 로그인'),
                               IconButton(
                                 icon: Icon(localAuth?Icons.check_box:Icons.check_box_outline_blank_outlined),
                                 onPressed: () async {
-                                setState(() {
-                                  localAuth = !localAuth;
-                                });
-                                await saveLocalAuth(localAuth);
-                              },),
+                                  setState(() {
+                                    localAuth = !localAuth;
+                                  });
+                                  if(localAuth){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => new PinPutPage(isPinRegister: true,)));
+                                    var pinTemp = await loadPinPut();
+                                    if(pinTemp == '----'){
+                                      setState(() {
+                                        localAuth = false;
+                                      });
+                                      await saveLocalAuth(localAuth);
+                                    }
+                                  }
+                                },),
                             ],
                           ),
-                      ),
-                      new Card(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Icon(Icons.access_alarm),
-                                  Text('미완료'),
-                                  Text(userInfo['numOfIncomplete'].toString())
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Icon(Icons.check_box),
-                                  Text('완료'),
-                                  Text(userInfo['numOfComplete'].toString())
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Icon(Icons.delete),
-                                  Text('휴지통'),
-                                  Text(userInfo['numOfTrash'].toString())
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ),
-                      Container(
-                        width: double.infinity,
-                        child: new Card(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Contact', style: TextStyle(fontSize: 20),),
-                              SizedBox(height: 5),
-                              InkWell(
-                                child: Text('P.H. : 010-2975-6120'),
-                                onTap: () async => await launchBrowser('tel:01029756120'),
-                              ),
-                              SizedBox(height: 5),
-                              InkWell(
-                                child: Text('Email : devacver@gmail.com'),
-                                onTap: () async => await launchBrowser('mailto:help@ssdam.net'),
-                              ),
-                            ],
-                          ),
-                          )
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 50, 15, 0),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: InkWell(
-                              child: new Card(
-                                child: Container(
-                                    width: 90,
-                                    height : 30,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('회원탈퇴'),
-                                        Icon(Icons.delete)
-                                      ],
-                                    )
-                                ),
+                        new Card(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Icon(Icons.access_alarm),
+                                      Text('미완료'),
+                                      Text(userInfo['numOfIncomplete'].toString())
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.check_box),
+                                      Text('완료'),
+                                      Text(userInfo['numOfComplete'].toString())
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.delete),
+                                      Text('휴지통'),
+                                      Text(userInfo['numOfTrash'].toString())
+                                    ],
+                                  )
+                                ],
                               ),
-                              onTap: ()=>printLog('회탈s'),
                             )
                         ),
-                      ),
-                    ],
-                  );
+                        Container(
+                          width: double.infinity,
+                          child: new Card(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Contact', style: TextStyle(fontSize: 20),),
+                                    SizedBox(height: 5),
+                                    InkWell(
+                                      child: Text('P.H. : 010-2975-6120'),
+                                      onTap: () async => await launchBrowser('tel:01029756120'),
+                                    ),
+                                    SizedBox(height: 5),
+                                    InkWell(
+                                      child: Text('Email : devacver@gmail.com'),
+                                      onTap: () async => await launchBrowser('mailto:help@ssdam.net'),
+                                    ),
+                                  ],
+                                ),
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 50, 15, 0),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: InkWell(
+                                child: new Card(
+                                  child: Container(
+                                      width: 90,
+                                      height : 30,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text('회원탈퇴'),
+                                          Icon(Icons.delete)
+                                        ],
+                                      )
+                                  ),
+                                ),
+                                onTap: ()=>printLog('회탈s'),
+                              )
+                          ),
+                        ),
+                      ],
+                    );
+                  }catch (e){
+                    return Container();
+                  }
               }
           })
         ],
