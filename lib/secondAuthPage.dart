@@ -62,8 +62,11 @@ class SecondAuthPageState extends State<SecondAuthPage> {
             }else{
               printLog((auth.data).toString());
               if(auth.data) return BucketListPage();
-              else {
+              else if(!isAvailable || auth.data==false){
                 return PinPutPage(isPinRegister: false,);
+              }
+              else {
+                return widgetLoading();
               }
             }
           }),

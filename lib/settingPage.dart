@@ -159,14 +159,15 @@ class SettingPageState extends State<SettingPage> {
                                     localAuth = !localAuth;
                                   });
                                   if(localAuth){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => new PinPutPage(isPinRegister: true,)));
-                                    var pinTemp = await loadPinPut();
-                                    if(pinTemp == '----'){
-                                      setState(() {
-                                        localAuth = false;
-                                      });
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => new PinPutPage(isPinRegister: true,))).then((value) async {
+                                        var pinTemp = await loadPinPut();
+                                        if(pinTemp == '----') {
+                                          setState(() {
+                                            localAuth = false;
+                                          });
+                                        }
+                                    });
                                       await saveLocalAuth(localAuth);
-                                    }
                                   }
                                 },),
                             ],
