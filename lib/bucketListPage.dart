@@ -386,7 +386,7 @@ class BucketListPageState extends State<BucketListPage> {
         case BucketState.complete:
           if (doc["_state"] == 1) {
             printLog(doc['_startDate'].toDate().toString());
-            BucketClass bucket_data = new BucketClass.forModify(
+            BucketClass bucket_data = new BucketClass.forComplete(
                 doc['_id'],
                 doc['_title'],
                 doc['_content'],
@@ -394,7 +394,10 @@ class BucketListPageState extends State<BucketListPage> {
                 doc['_closingDate'] == null
                     ? null
                     : doc['_closingDate'].toDate(),
-                doc['_importance']);
+                doc['_importance'],
+                doc['_image'],
+                doc['_review'],
+                doc['_address']);
             completeBucketList.add(new InkWell(
                 onTap: () {
                   Route route = MaterialPageRoute(

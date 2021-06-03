@@ -74,6 +74,7 @@ dependencies:
   flutter_switch: ^0.3.0
 
   #auth
+  flutter_screen_lock: ^4.0.4+1
   local_auth: ^0.6.3+4
   pinput: ^1.2.0
 dev_dependencies:

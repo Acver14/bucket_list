@@ -153,7 +153,6 @@ Widget build(BuildContext context) {
     map.forEach((key, value) {
       list.add(_ImageCard(
         imagePath: value,
-        imageTitle: key,
         onTap: onTap,
       ));
     });
@@ -319,7 +318,7 @@ class _ImageView extends StatelessWidget {
         image: DecorationImage(
           /// Checking if it's a network image or an asset image and
           /// acting accordingly.
-          image: Image.file(File(imagePath)).image,
+          image: imagePath.contains('http')?NetworkImage(imagePath):Image.file(File(imagePath)).image,
           fit: BoxFit.fill,
           alignment: Alignment.topCenter,
         ),

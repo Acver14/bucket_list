@@ -41,6 +41,20 @@ class BucketClass{
     this._importance = importance;
   }
 
+  BucketClass.forComplete(int id, String title, String content, DateTime startDate, DateTime closingDate, double  importance, List image, String review,
+      String address){
+    this._id = id;
+    this._title = title;
+    this._image = image;
+    this._content = content;
+    this._review = review;
+    this._address = address;
+    this._startDate = startDate;
+    this._closingDate = closingDate;
+    this._achievementDate = _achievementDate;
+    this._importance = importance;
+  }
+
   bool existImage(){
     print(_image.isNotEmpty);
     return _image.isNotEmpty;

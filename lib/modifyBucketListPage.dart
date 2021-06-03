@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bucket_list/provider/firebase_provider.dart';
+import 'package:bucket_list/widgetClass/imageCardList.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,6 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'mapPickerPage.dart';
-import 'widgetClass/image_card_list.dart';
 
 import "dart:convert";
 import "package:http/http.dart" as http;
@@ -124,8 +124,8 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
   }
 
   uploadImageList(List _imageList) async {
-    _imageList.forEach((_image) {
-      uploadImage(_imageList.indexOf(_image).toString(), _image);
+    _imageList.forEach((_image) async {
+      await uploadImage(_imageList.indexOf(_image).toString(), _image);
     });
   }
 

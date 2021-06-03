@@ -1,3 +1,4 @@
+import 'package:bucket_list/authPage.dart';
 import 'package:flutter/material.dart';
 import 'splashScreenPage.dart';
 
