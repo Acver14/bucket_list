@@ -77,6 +77,14 @@ dependencies:
   flutter_screen_lock: ^4.0.4+1
   local_auth: ^0.6.3+4
   pinput: ^1.2.0
+
+  #kakao
+  dio: ^3.0.10
+  json_annotation: ^3.0.1
+  platform: ^2.2.1
+  package_info: ^0.4.0+18
+  kakao_flutter_sdk: ^0.5.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

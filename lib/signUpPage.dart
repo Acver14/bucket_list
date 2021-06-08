@@ -49,7 +49,7 @@ class SignUpPageState extends State<SignUpPage> {
         children: <Widget>[
           NaverSignInButton(onPressed: (){},),
           GoogleSignInButton(onPressed: () async => await signInWithGoogle(_scaffoldKey, fp),),
-          KakaoSignInButton(onPressed: (){},),
+          KakaoSignInButton(onPressed: () async => await signInWithKakao(_scaffoldKey, fp),),
           AppleSignInButton(onPressed: (){},),
           EmailSignInButton(onPressed: (){},)
         ],

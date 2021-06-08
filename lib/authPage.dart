@@ -56,27 +56,8 @@ class AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
-    if (fp.getUser() != null && fp.getUser().isEmailVerified == true) {
-      printLog(fp.getUser().email);
+    if (fp.getUser() != null) {
       if(_localAuth){
-        //return SecondAuthPage();
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   setState(() {
-        //     screenLock<void>(
-        //       context: context,
-        //       correctString: '1234',
-        //       customizedButtonChild: const Icon(
-        //         Icons.fingerprint,
-        //       ),
-        //       customizedButtonTap: () async {
-        //         await localAuth(context);
-        //       },
-        //       didOpened: () async {
-        //         await localAuth(context);
-        //       },
-        //     );
-        //   });
-        // });
         return PinPutPage(isPinRegister: false);
       }
         return BucketListPage();

@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:bucket_list/method/printLog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:logger/logger.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 Logger logger = Logger();
 
@@ -91,6 +96,51 @@ class FirebaseProvider with ChangeNotifier {
       final FirebaseUser currentUser = await fAuth.currentUser();
       assert(user.uid == currentUser.uid);
       setUser(user);
+      return true;
+    } on Exception catch (e) {
+      logger.e(e.toString());
+      List<String> result = e.toString().split(", ");
+      setLastFBMessage(result[1]);
+      return false;
+    }
+  }
+
+  // 카카오 계정을 이용하여 Firebase에 로그인
+  Future<bool> signInWithKakaoAccount() async {
+    try{
+      var isKakaoInstalled = await isKakaoTalkInstalled();
+      String authCode;
+      if(isKakaoInstalled){
+        authCode = await AuthCodeClient.instance.requestWithTalk();
+      }else{
+        authCode = await AuthCodeClient.instance.request();
+      }
+      var token = await AuthApi.instance.issueAccessToken(authCode);
+      AccessTokenStore.instance.toStore(token);
+      printLog(token.accessToken);
+      final http.Response uid = await http.post(
+        'https://kapi.kakao.com/v2/user/me',
+        headers: {
+          "Authorization": "Bearer ${token.accessToken}"
+        },
+      );
+      printLog("user id : " + uid.body);
+
+      final http.Response response = await http.post(
+        'https://asia-northeast3-bucket-list-38be8.cloudfunctions.net/makeAndSendCustomToken',
+        body: {
+          "token": "Kakao${jsonDecode(uid.body)['id'].toString()}"
+        },
+      );
+
+      printLog(response.body);
+
+      final AuthResult authResult = await fAuth.signInWithCustomToken(token: response.body);
+      final FirebaseUser user = authResult.user;
+      final FirebaseUser currentUser = await fAuth.currentUser();
+      assert(user.uid == currentUser.uid);
+      setUser(user);
+
       return true;
     } on Exception catch (e) {
       logger.e(e.toString());
