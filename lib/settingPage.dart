@@ -105,6 +105,7 @@ class SettingPageState extends State<SettingPage> {
               }
               else{
                   try{
+                    logger.d(profilePath);
                     return new Column(
                       children: [
                         new Card(
@@ -114,11 +115,11 @@ class SettingPageState extends State<SettingPage> {
                                 children: [
                                   SizedBox(
                                     width: 60,
-                                    height: 60,
+                                    height: 40,
                                     child: InkWell(
                                       child: profilePath==''?
-                                      CircleAvatar(
-                                        foregroundColor: Colors.black,
+                                      ClipOval(
+                                        child: Icon(Icons.person_outline),
                                       ):ClipOval(
                                         child: profilePath.contains('http')?CachedNetworkImage(
                                           height: 100,
@@ -136,13 +137,7 @@ class SettingPageState extends State<SettingPage> {
                                     ),
                                   ),
                                   SizedBox(width: 20),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('별명 : ' + userInfo['nickName']),
-                                      Text('이메일 : ' + fp.getUser().email??'이메일을 찾을 수 없습니다.')
-                                    ],
-                                  )
+                                  Text('별명 : ' + userInfo['nickName']),
                                 ],
                               ),
                             )
@@ -221,7 +216,7 @@ class SettingPageState extends State<SettingPage> {
                                     SizedBox(height: 5),
                                     InkWell(
                                       child: Text('Email : devacver@gmail.com'),
-                                      onTap: () async => await launchBrowser('mailto:help@ssdam.net'),
+                                      onTap: () async => await launchBrowser('mailto:devacver@gmail.com'),
                                     ),
                                   ],
                                 ),
@@ -252,7 +247,8 @@ class SettingPageState extends State<SettingPage> {
                         ),
                       ],
                     );
-                  }catch (e){
+                  }on Exception catch (e){
+                    logger.e(e);
                     return Container();
                   }
               }

@@ -77,6 +77,7 @@ dependencies:
   flutter_screen_lock: ^4.0.4+1
   local_auth: ^0.6.3+4
   pinput: ^1.2.0
+  flutter_naver_login: ^1.2.2
 
   #kakao
   dio: ^3.0.10

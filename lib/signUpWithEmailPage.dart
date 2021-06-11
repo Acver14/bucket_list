@@ -1,23 +1,17 @@
 import 'package:bucket_list/method/loginMethod.dart';
-import 'package:bucket_list/signUpWithEmailPage.dart';
-import 'package:flutter/material.dart';
 import 'package:bucket_list/provider/firebase_provider.dart';
-import 'package:bucket_list/signUpPage.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'method/methodForFirestore.dart';
 
-LoginWithEmailPageState pageState;
+class SignUpWithEmailPage extends StatefulWidget {
+  SignUpWithEmailPage({Key key, this.title}) : super(key: key);
+  final String title;
 
-class LoginWithEmailPage extends StatefulWidget {
   @override
-  LoginWithEmailPageState createState() {
-    pageState = LoginWithEmailPageState();
-    return pageState;
-  }
+  SignUpWithEmailPageState createState() => SignUpWithEmailPageState();
 }
 
-class LoginWithEmailPageState extends State<LoginWithEmailPage> {
+class SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
   TextEditingController _mailCon = TextEditingController();
   TextEditingController _pwCon = TextEditingController();
   bool doRemember = false;
@@ -28,12 +22,10 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
   @override
   void initState() {
     super.initState();
-    getRememberInfo();
   }
 
   @override
   void dispose() {
-    setRememberInfo();
     _mailCon.dispose();
     _pwCon.dispose();
     super.dispose();
@@ -43,6 +35,7 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
+    logger.d(fp.getUser());
     return Scaffold(
       key: _scaffoldKey,
       //appBar: AppBar(title: Text("Sign-In Page")),
@@ -141,12 +134,12 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
             child: RaisedButton(
               color: Colors.indigo[300],
               child: Text(
-                "이메일로 시작하기",
+                "회원가입",
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () async {
+              onPressed: () {
                 FocusScope.of(context).requestFocus(new FocusNode()); // 키보드 감춤
-                await signInWithEmail(context, _scaffoldKey, fp, _mailCon.text, _pwCon.text);
+                signUpWithEmail(_scaffoldKey, fp, _mailCon.text, _pwCon.text);
               },
             ),
           ),
@@ -175,29 +168,4 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
       ),
     );
   }
-  getRememberInfo() async {
-    logger.d(doRemember);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      doRemember = (prefs.getBool("doRemember") ?? false);
-    });
-    if (doRemember) {
-      setState(() {
-        _mailCon.text = (prefs.getString("userEmail") ?? "");
-        _pwCon.text = (prefs.getString("userPasswd") ?? "");
-      });
-    }
-  }
-
-  setRememberInfo() async {
-    logger.d(doRemember);
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("doRemember", doRemember);
-    if (doRemember) {
-      prefs.setString("userEmail", _mailCon.text);
-      prefs.setString("userPasswd", _pwCon.text);
-    }
-  }
-
 }

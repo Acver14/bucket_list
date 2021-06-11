@@ -7,7 +7,7 @@ import 'authButton/naver.dart';
 import 'authButton/kakao.dart';
 import 'authButton/apple.dart';
 import 'method/loginMethod.dart';
-
+import 'loginWithEmailPage.dart';
 SignUpPageState pageState;
 
 class SignUpPage extends StatefulWidget {
@@ -47,11 +47,14 @@ class SignUpPageState extends State<SignUpPage> {
       //appBar: AppBar(title: Text("Sign-In Page")),
       body: ListView(
         children: <Widget>[
-          NaverSignInButton(onPressed: (){},),
+          NaverSignInButton(onPressed: ()async => await signInWithNaver(_scaffoldKey, fp),),
           GoogleSignInButton(onPressed: () async => await signInWithGoogle(_scaffoldKey, fp),),
           KakaoSignInButton(onPressed: () async => await signInWithKakao(_scaffoldKey, fp),),
           AppleSignInButton(onPressed: (){},),
-          EmailSignInButton(onPressed: (){},)
+          EmailSignInButton(onPressed: (){
+            Route route = MaterialPageRoute(
+                builder: (context) => LoginWithEmailPage());
+            Navigator.push(context, route);})
         ],
       ),
     );

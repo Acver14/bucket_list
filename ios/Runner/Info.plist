@@ -51,6 +51,20 @@
 			</array>
 		</dict>
 	</array>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>naversearchapp</string>
+        <string>naversearchthirdlogin</string>
+    </array>
+    <key>kServiceAppUrlScheme</key>
+    <string>https://www.google.com</string>
+    <key>kConsumerKey</key>
+    <string>_mC3dn8WxMzuyn7hlj4x</string>
+    <key>kConsumerSecret</key>
+    <string>pJS9Ppkrsh</string>
+    <key>kServiceAppName</key>
+    <string>inYourBucket</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -105,5 +119,31 @@
     <string>kakaolink</string>
     <string>kakaotalk-5.9.7</string>
     </array>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+           <key>NSAllowsArbitraryLoads</key>
+           <true/>
+           <key>NSExceptionDomains</key>
+           <dict>
+              <key>naver.com</key>
+              <dict>
+                 <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                 <true/>
+                 <key>NSExceptionRequiresForwardSecrecy</key>
+                 <false/>
+                 <key>NSIncludesSubdomains</key>
+                 <true/>
+              </dict>
+              <key>naver.net</key>
+              <dict>
+                 <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                 <true/>
+                 <key>NSExceptionRequiresForwardSecrecy</key>
+                 <false/>
+                 <key>NSIncludesSubdomains</key>
+                 <true/>
+              </dict>
+           </dict>
+        </dict>
 </dict>
 </plist>

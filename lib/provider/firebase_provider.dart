@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bucket_list/method/printLog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:logger/logger.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -72,8 +73,14 @@ class FirebaseProvider with ChangeNotifier {
       return false;
     } on Exception catch (e) {
       logger.e(e.toString());
-      List<String> result = e.toString().split(", ");
-      setLastFBMessage(result[1]);
+      if(e.toString().contains('ERROR_USER_NOT_FOUND')){
+        setLastFBMessage('가입된 정보가 없어 입력하신 이메일로 인증 바랍니다.');
+        await signUpWithEmail(email, password);
+      }
+      else{
+        List<String> result = e.toString().split(", ");
+        setLastFBMessage(result[1]);
+      }
       return false;
     }
   }
@@ -150,6 +157,27 @@ class FirebaseProvider with ChangeNotifier {
     }
   }
 
+  // 네이버 계정을 이용하여 Firebase에 로그인
+  Future<bool> signInWithNaverAccount() async {
+    try{
+      final NaverLoginResult result = await FlutterNaverLogin.logIn();
+      NaverAccessToken res = await FlutterNaverLogin.currentAccessToken;
+      var uid = result.account.id;
+
+      // final AuthResult authResult = await fAuth.signInWithCustomToken(token: uid);
+      // final FirebaseUser user = authResult.user;
+      // final FirebaseUser currentUser = await fAuth.currentUser();
+      // assert(user.uid == currentUser.uid);
+      // setUser(user);
+
+      return true;
+    } on Exception catch (e) {
+      logger.e(e.toString());
+      List<String> result = e.toString().split(", ");
+      setLastFBMessage(result[1]);
+      return false;
+    }
+  }
   // Firebase로부터 로그아웃
   signOut() async {
     await fAuth.signOut();
