@@ -2,16 +2,16 @@ import UIKit
 import Flutter
 import Firebase
 import GoogleMaps
+import NaverThirdPartyLogin
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
+    _ app: UIApplication, open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
     GMSServices.provideAPIKey("AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk")
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    return NaverThirdPartyLoginConnection.getSharedInstance().application(app, open: url, options: options)
   }
 }

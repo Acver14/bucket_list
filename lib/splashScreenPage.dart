@@ -27,7 +27,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
       _localAuth = ret;
     });
     Timer(Duration(milliseconds: 1500), () {
-      printLog(_localAuth.toString());
         Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => AuthPage(localAuth: _localAuth,)));
     });
   }

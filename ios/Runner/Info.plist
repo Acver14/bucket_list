@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>KAKAO_API_KEY</key>
-	<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -50,25 +46,61 @@
 				<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>naverLogin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>naverLogin</string>
+			</array>
+		</dict>
 	</array>
-
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>naversearchapp</string>
-        <string>naversearchthirdlogin</string>
-    </array>
-    <key>kServiceAppUrlScheme</key>
-    <string>https://www.google.com</string>
-    <key>kConsumerKey</key>
-    <string>_mC3dn8WxMzuyn7hlj4x</string>
-    <key>kConsumerSecret</key>
-    <string>pJS9Ppkrsh</string>
-    <key>kServiceAppName</key>
-    <string>inYourBucket</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>KAKAO_API_KEY</key>
+	<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+		<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>kakaolink</string>
+		<string>kakaotalk-5.9.7</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>naver.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>naver.net</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>To take pictures of your trash</string>
 	<key>NSFaceIDUsageDescription</key>
@@ -109,41 +141,13 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-    <!-- common -->
-    <string>kakao7da825303df3079be26a6a3f36e1a55e</string>
-    <string>kakaokompassauth</string>
-    <string>storykompassauth</string>
-    <!-- KakaoLink -->
-    <string>kakaolink</string>
-    <string>kakaotalk-5.9.7</string>
-    </array>
-        <key>NSAppTransportSecurity</key>
-        <dict>
-           <key>NSAllowsArbitraryLoads</key>
-           <true/>
-           <key>NSExceptionDomains</key>
-           <dict>
-              <key>naver.com</key>
-              <dict>
-                 <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                 <true/>
-                 <key>NSExceptionRequiresForwardSecrecy</key>
-                 <false/>
-                 <key>NSIncludesSubdomains</key>
-                 <true/>
-              </dict>
-              <key>naver.net</key>
-              <dict>
-                 <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                 <true/>
-                 <key>NSExceptionRequiresForwardSecrecy</key>
-                 <false/>
-                 <key>NSIncludesSubdomains</key>
-                 <true/>
-              </dict>
-           </dict>
-        </dict>
+	<key>kConsumerKey</key>
+	<string>_mC3dn8WxMzuyn7hlj4x</string>
+	<key>kConsumerSecret</key>
+	<string>pJS9Ppkrsh</string>
+	<key>kServiceAppName</key>
+	<string>inYourBucket</string>
+	<key>kServiceAppUrlScheme</key>
+	<string>https://www.google.com</string>
 </dict>
 </plist>

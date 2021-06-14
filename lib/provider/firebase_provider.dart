@@ -164,6 +164,8 @@ class FirebaseProvider with ChangeNotifier {
       NaverAccessToken res = await FlutterNaverLogin.currentAccessToken;
       var uid = result.account.id;
 
+      printLog(uid);
+      printLog(result.account.email);
       // final AuthResult authResult = await fAuth.signInWithCustomToken(token: uid);
       // final FirebaseUser user = authResult.user;
       // final FirebaseUser currentUser = await fAuth.currentUser();
