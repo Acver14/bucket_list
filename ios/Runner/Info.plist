@@ -148,6 +148,6 @@
 	<key>kServiceAppName</key>
 	<string>inYourBucket</string>
 	<key>kServiceAppUrlScheme</key>
-	<string>https://www.google.com</string>
+	<string>naverLogin</string>
 </dict>
 </plist>

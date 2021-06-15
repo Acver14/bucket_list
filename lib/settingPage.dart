@@ -105,7 +105,6 @@ class SettingPageState extends State<SettingPage> {
               }
               else{
                   try{
-                    logger.d(profilePath);
                     return new Column(
                       children: [
                         new Card(

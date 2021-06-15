@@ -166,11 +166,17 @@ class FirebaseProvider with ChangeNotifier {
 
       printLog(uid);
       printLog(result.account.email);
-      // final AuthResult authResult = await fAuth.signInWithCustomToken(token: uid);
-      // final FirebaseUser user = authResult.user;
-      // final FirebaseUser currentUser = await fAuth.currentUser();
-      // assert(user.uid == currentUser.uid);
-      // setUser(user);
+      final http.Response response = await http.post(
+        'https://asia-northeast3-bucket-list-38be8.cloudfunctions.net/makeAndSendCustomToken',
+        body: {
+          "token": "Naver$uid"
+        },
+      );
+      final AuthResult authResult = await fAuth.signInWithCustomToken(token: response.body);
+      final FirebaseUser user = authResult.user;
+      final FirebaseUser currentUser = await fAuth.currentUser();
+      assert(user.uid == currentUser.uid);
+      setUser(user);
 
       return true;
     } on Exception catch (e) {
