@@ -50,7 +50,7 @@ class SignUpPageState extends State<SignUpPage> {
           NaverSignInButton(onPressed: ()async => await signInWithNaver(_scaffoldKey, fp),),
           GoogleSignInButton(onPressed: () async => await signInWithGoogle(_scaffoldKey, fp),),
           KakaoSignInButton(onPressed: () async => await signInWithKakao(_scaffoldKey, fp),),
-          AppleSignInButton(onPressed: (){},),
+          AppleSignInButton(onPressed: () async => await signInWithApple(_scaffoldKey, fp),),
           EmailSignInButton(onPressed: (){
             Route route = MaterialPageRoute(
                 builder: (context) => LoginWithEmailPage());

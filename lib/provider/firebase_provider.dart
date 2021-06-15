@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bucket_list/method/printLog.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,8 @@ import 'package:kakao_flutter_sdk/all.dart';
 import 'package:logger/logger.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:apple_sign_in_firebase/apple_sign_in_firebase.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
 
 Logger logger = Logger();
 
@@ -186,6 +189,56 @@ class FirebaseProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> signInWithAppleAccount() async {
+    try {
+      if (Platform.isIOS) {
+        if (!await AppleSignIn.isAvailable()) {
+          logger.e('애플 로그인 사용 불가');
+          setLastFBMessage('해당 소프트웨어 버전에서는 애플 로그인을 사용할 수 없습니다.');
+          return false;
+        }
+        AuthorizationRequest authorizationRequest = AppleIdRequest(
+            requestedScopes: [Scope.email, Scope.fullName]);
+        AuthorizationResult authorizationResult = await AppleSignIn
+            .performRequests([authorizationRequest]);
+        logger.d(authorizationResult);
+        AppleIdCredential appleCredential = authorizationResult.credential;
+
+        OAuthProvider provider = new OAuthProvider(providerId: "apple.com");
+        logger.d(appleCredential.toString());
+        AuthCredential credential = provider.getCredential(
+          idToken: String.fromCharCodes(appleCredential.identityToken),
+          accessToken: String.fromCharCodes(
+              appleCredential.authorizationCode),);
+        FirebaseAuth auth = FirebaseAuth.instance;
+        AuthResult authResult = await auth.signInWithCredential(credential);
+        // 인증에 성공한 유저 정보
+        FirebaseUser user = authResult.user;
+        String name = appleCredential.fullName.givenName;
+        logger.d('user name for apple : ${name}');
+        setUser(user);
+      } else {
+        final Map appleCredential = await AppleSignInFirebase.signIn();
+        //logger.d(String.fromCharCodes(appleCredential['idToken']));
+        OAuthProvider provider = new OAuthProvider(providerId: "apple.com");
+        AuthCredential credential = provider.getCredential(
+          idToken: appleCredential['idToken'],
+          accessToken: appleCredential['accessToken'],);
+        FirebaseAuth auth = FirebaseAuth.instance;
+        AuthResult authResult = await auth.signInWithCredential(credential);
+        // 인증에 성공한 유저 정보
+        FirebaseUser user = authResult.user;
+        setUser(user);
+      }
+    } on Exception catch (e) {
+      logger.e(e.toString());
+      List<String> result = e.toString().split(", ");
+      setLastFBMessage(result[1]);
+      return false;
+    }
+  }
+
   // Firebase로부터 로그아웃
   signOut() async {
     await fAuth.signOut();

@@ -5,6 +5,7 @@ import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:bucket_list/signUpPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'constantClass/sizeConstant.dart';
 import 'method/methodForFirestore.dart';
 
 LoginWithEmailPageState pageState;
@@ -48,6 +49,19 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
       //appBar: AppBar(title: Text("Sign-In Page")),
       body: ListView(
         children: <Widget>[
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              new Align(
+                alignment: Alignment.centerLeft,
+                child: new IconButton(icon: new Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
+              ),
+            ],
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 20, top: 10, right: 20),
+            child: Image.asset("assets/test.gif")
+          ),
           Container(
             margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
             child: Column(
@@ -139,7 +153,7 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: RaisedButton(
-              color: Colors.indigo[300],
+              color: Colors.black,
               child: Text(
                 "이메일로 시작하기",
                 style: TextStyle(color: Colors.white),

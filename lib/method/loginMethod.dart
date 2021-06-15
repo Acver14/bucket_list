@@ -55,6 +55,26 @@ Future<void> signInWithNaver(GlobalKey<ScaffoldState> _scaffoldKey, FirebaseProv
   if (result == false) showLastFBMessage(_scaffoldKey, fp);
 }
 
+Future<void> signInWithApple(GlobalKey<ScaffoldState> _scaffoldKey, FirebaseProvider fp) async {
+  var _localAuth;
+  loadLocalAuth().then((ret){
+    _localAuth = ret;
+  });
+  _scaffoldKey.currentState
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      duration: Duration(seconds: 10),
+      content: Row(
+        children: <Widget>[
+          CircularProgressIndicator(),
+          Text("   Signing-In...")
+        ],
+      ),
+    ));
+  bool result = await fp.signInWithAppleAccount();
+  _scaffoldKey.currentState.hideCurrentSnackBar();
+  if (result == false) showLastFBMessage(_scaffoldKey, fp);
+}
 
 Future<void> signInWithEmail(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey, FirebaseProvider fp, String email, String password) async {
   var _localAuth;
@@ -82,7 +102,6 @@ Future<void> signInWithEmail(BuildContext context, GlobalKey<ScaffoldState> _sca
   }
   if (result == false) showLastFBMessage(_scaffoldKey, fp);
 }
-
 
 Future<void> signUpWithEmail(GlobalKey<ScaffoldState> _scaffoldKey, FirebaseProvider fp, String email, String password) async {
   var _localAuth;
