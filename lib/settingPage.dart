@@ -114,7 +114,7 @@ class SettingPageState extends State<SettingPage> {
                                 children: [
                                   SizedBox(
                                     width: 60,
-                                    height: 40,
+                                    height: 60,
                                     child: InkWell(
                                       child: profilePath==''?
                                       ClipOval(
@@ -136,7 +136,14 @@ class SettingPageState extends State<SettingPage> {
                                     ),
                                   ),
                                   SizedBox(width: 20),
-                                  Text('별명 : ' + userInfo['nickName']),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('별명 : ' + userInfo['nickName']),
+                                      SizedBox(height:5),
+                                      Text('달성률 : ${((userInfo['numOfComplete'] / (userInfo['numOfComplete'] + userInfo['numOfIncomplete'])) * 100).toStringAsFixed(2)}%')
+                                    ],
+                                  )
                                 ],
                               ),
                             )
@@ -225,7 +232,7 @@ class SettingPageState extends State<SettingPage> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 50, 15, 0),
                           child: Align(
-                              alignment: Alignment.centerRight,
+                              alignment: Alignment.centerLeft,
                               child: InkWell(
                                 child: new Card(
                                   child: Container(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bucket_list/method/printLog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -19,6 +20,7 @@ class FirebaseProvider with ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   FirebaseUser _user; // Firebase에 로그인 된 사용자
+  var _userInfo;
 
   String _lastFirebaseResponse = ""; // Firebase로부터 받은 최신 메시지(에러 처리용)
 
@@ -31,15 +33,30 @@ class FirebaseProvider with ChangeNotifier {
     return _user;
   }
 
+  getUserInfo(){
+    return _userInfo;
+  }
+
   void setUser(FirebaseUser value) {
     _user = value;
     notifyListeners();
   }
 
+  setUserInfo() async {
+    _userInfo = await Firestore.instance
+        .collection(getUser().uid)
+        .document('user_info').get().then((value) {
+      printLog(value.data.toString());
+      return value;
+    });
+    notifyListeners();
+  }
+
   // 최근 Firebase에 로그인한 사용자의 정보 획득
   _prepareUser() {
-    fAuth.currentUser().then((FirebaseUser currentUser) {
+    fAuth.currentUser().then((FirebaseUser currentUser) async {
       setUser(currentUser);
+      await setUserInfo();
     });
   }
 
@@ -70,6 +87,7 @@ class FirebaseProvider with ChangeNotifier {
           email: email, password: password);
       if (result != null) {
         setUser(result.user);
+        setUserInfo();
         logger.d(getUser());
         return true;
       }
@@ -106,6 +124,7 @@ class FirebaseProvider with ChangeNotifier {
       final FirebaseUser currentUser = await fAuth.currentUser();
       assert(user.uid == currentUser.uid);
       setUser(user);
+      setUserInfo();
       return true;
     } on Exception catch (e) {
       logger.e(e.toString());
@@ -150,6 +169,7 @@ class FirebaseProvider with ChangeNotifier {
       final FirebaseUser currentUser = await fAuth.currentUser();
       assert(user.uid == currentUser.uid);
       setUser(user);
+      setUserInfo();
 
       return true;
     } on Exception catch (e) {
@@ -180,6 +200,7 @@ class FirebaseProvider with ChangeNotifier {
       final FirebaseUser currentUser = await fAuth.currentUser();
       assert(user.uid == currentUser.uid);
       setUser(user);
+      setUserInfo();
 
       return true;
     } on Exception catch (e) {
@@ -218,6 +239,7 @@ class FirebaseProvider with ChangeNotifier {
         String name = appleCredential.fullName.givenName;
         logger.d('user name for apple : ${name}');
         setUser(user);
+        setUserInfo();
       } else {
         final Map appleCredential = await AppleSignInFirebase.signIn();
         //logger.d(String.fromCharCodes(appleCredential['idToken']));
@@ -230,6 +252,7 @@ class FirebaseProvider with ChangeNotifier {
         // 인증에 성공한 유저 정보
         FirebaseUser user = authResult.user;
         setUser(user);
+        setUserInfo();
       }
     } on Exception catch (e) {
       logger.e(e.toString());
@@ -237,6 +260,7 @@ class FirebaseProvider with ChangeNotifier {
       setLastFBMessage(result[1]);
       return false;
     }
+    return true;
   }
 
   // Firebase로부터 로그아웃

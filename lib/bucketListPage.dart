@@ -363,6 +363,9 @@ class BucketListPageState extends State<BucketListPage> {
                   printLog('데이터 삭제');
                 },
                 child: Card(
+                  color: (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-2?Colors.red:
+                  (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-5?Colors.orange:
+                    (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-10?Colors.yellow:Colors.white,
                     child: ListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -515,6 +518,12 @@ goToTrashPressedBucket(BucketClass bucketData) async {
       .setData({
     "_state" : -1
   }, merge: true);
+  await firestore.collection(fp.getUser().uid).document('user_info')
+      .setData({
+    "numOfTrash" : fp.getUserInfo()['numOfTrash']+1,
+    "numOfIncomplete" : fp.getUserInfo()['numOfIncomplete']-1
+  }, merge: true);
+  await fp.setUserInfo();
 }
 
 
@@ -525,6 +534,13 @@ goToIncompletedPressedBucket(BucketClass bucketData) async {
       .setData({
     "_state" : 0
   }, merge: true);
+
+  await firestore.collection(fp.getUser().uid).document('user_info')
+      .setData({
+    "numOfTrash" : fp.getUserInfo()['numOfTrash']-1,
+    "numOfIncomplete" : fp.getUserInfo()['numOfIncomplete']+1
+  });
+  await fp.setUserInfo();
 }
 
 removeBucket(BucketClass bucketData) async{
@@ -532,4 +548,9 @@ removeBucket(BucketClass bucketData) async{
 
   await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
       .delete();
+  await firestore.collection(fp.getUser().uid).document('user_info')
+      .setData({
+    "numOfTrash" : fp.getUserInfo()['numOfTrash']-1,
+  }, merge: true);
+  await fp.setUserInfo();
 }

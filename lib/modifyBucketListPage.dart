@@ -529,6 +529,12 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
 
     await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
         .setData(bucketData.toMap(), merge: true);
+    await firestore.collection(fp.getUser().uid).document('user_info')
+        .setData({
+      "numOfComplete" : fp.getUserInfo()['numOfTrash']+1,
+      "numOfIncomplete" : fp.getUserInfo()['numOfIncomplete']-1
+    }, merge: true);
+    await fp.setUserInfo();
     Navigator.of(_LoaderDialog.currentContext,rootNavigator: true).pop();
   }
 }

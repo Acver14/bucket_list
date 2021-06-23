@@ -50,7 +50,6 @@ dependencies:
   firebase_storage: ^3.1.5
   cloud_firestore: ^0.13.4+2
   cloud_functions: ^0.4.1+4
-  google_sign_in: ^4.4.1
 #  place_picker: 0.9.0
 
   google_maps_place_picker: ^1.0.1
@@ -74,6 +73,7 @@ dependencies:
   flutter_switch: ^0.3.0
 
   #auth
+  google_sign_in: ^4.4.1
   flutter_screen_lock: ^4.0.4+1
   local_auth: ^0.6.3+4
   pinput: ^1.2.0

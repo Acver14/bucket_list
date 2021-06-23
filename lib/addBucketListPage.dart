@@ -222,5 +222,10 @@ class AddBucketListPageState extends State<AddBucketListPage> {
     printLog(fp.getUser().uid);
     await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
         .setData(bucketData.toMap());
+
+    await firestore.collection(fp.getUser().uid).document('user_info')
+        .setData({
+      "numOfIncomplete" : fp.getUserInfo()['numOfIncomplete']+1
+    }, merge: true);
   }
 }
