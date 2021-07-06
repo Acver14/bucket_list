@@ -44,6 +44,7 @@ class BucketListPageState extends State<BucketListPage> {
 
   AsyncSnapshot<QuerySnapshot> bucketListSnapshot;
   QuerySnapshot bucketInfos;
+  List<DocumentSnapshot> bucketInfoList;
 
   List<InkWell> bucketList;
 
@@ -89,7 +90,7 @@ class BucketListPageState extends State<BucketListPage> {
           .collection(fp.getUser().uid)
           .document('bucket_list')
           .collection('buckets')
-          .orderBy('_importance', descending: true)
+          .orderBy('_title', descending: false)
           .getDocuments()
           .then((value) {
         _loaded = true;
@@ -107,7 +108,7 @@ class BucketListPageState extends State<BucketListPage> {
           .collection(fp.getUser().uid)
           .document('bucket_list')
           .collection('buckets')
-          .orderBy('_importance', descending: true)
+          .orderBy('_title', descending: false)
           .getDocuments()
           .then((value) {
         _loaded = true;
@@ -117,14 +118,17 @@ class BucketListPageState extends State<BucketListPage> {
   }
 
   sortBucketList(){
-    bucketListSnapshot.data.documents.sort((a, b){
+    bucketInfoList.sort((a, b){
       switch(_sorting){
         case Sort.importance:
-          return (b['_importance'] < (a['_importance']))?-1:1;
+          if(b['_importance'] < a['_importance']) return -1;
+          else if(b['_importance'] > a['_importance']) return -1;
+          else return 0;
+          break;
         case Sort.creationDate:
-          return (b['_startDate'].toDate().isAfter(a['_startDate'].toDate())?-1:1);
+          return (b['_startDate'].toDate().compareTo(a['_startDate'].toDate()));
         case Sort.title:
-          if(b['_state'] == 0 && a['_state'] == 0) printLog("${b['_title']} & ${a['_title']}" + b['_title'].toString().compareTo(a['_title'].toString()).toString());
+          //if(b['_state'] == 0 && a['_state'] == 0) printLog("${b['_title']} & ${a['_title']}" + b['_title'].toString().compareTo(a['_title'].toString()).toString());
           return (b['_title'].toString().compareTo(a['_title'].toString()));
         default:
           return (b['_title'].toString().compareTo(a['_title'].toString()));
@@ -136,6 +140,7 @@ class BucketListPageState extends State<BucketListPage> {
   Widget build(BuildContext context) {
     Firestore firestore = Firestore.instance;
     fp = Provider.of<FirebaseProvider>(context);
+    final a = ['horse', 'pig', 'dog', 'cat']; print(a); a.sort((a, b) => a.compareTo(b)); print(a);
     double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: Flex(
@@ -199,7 +204,8 @@ class BucketListPageState extends State<BucketListPage> {
                         );
                       } else {
                         if (snapshot.data.documents.length > 0) {
-                          bucketListSnapshot = snapshot;
+                          bucketInfoList = snapshot.data.documents;
+                          sortBucketList();
                           getBucketList();
                           //switch 이용해서 분류
                           switch (_stateOfView) {
@@ -348,7 +354,7 @@ class BucketListPageState extends State<BucketListPage> {
     completeBucketList = [];
     trashBucketList = [];
 
-    bucketListSnapshot.data.documents.map((doc) {
+    bucketInfoList.map((doc) {
       var _state;
       switch (_stateOfView) {
         case BucketState.incomplete:
