@@ -60,7 +60,7 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
           ),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 10, right: 20),
-            child: Image.asset("assets/test.gif")
+            child: Image.asset("assets/logos/iyb.png")
           ),
           Container(
             margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -68,26 +68,28 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
               children: <Widget>[
                 // Input Area
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 1),
-                  ),
                   child: Column(
                     children: <Widget>[
-                      TextField(
+                      Theme(
+                        data: Theme.of(context).copyWith(primaryColor: Colors.black,),
+                        child: TextField(
                         controller: _mailCon,
+                        cursorColor: Colors.black,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.mail),
+                          prefixIcon: Icon(Icons.mail,),
                           hintText: "Email",
                         ),
-                      ),
-                      TextField(
-                        controller: _pwCon,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock),
-                          hintText: "Password",
-                        ),
-                        obscureText: true,
-                      ),
+                      ),),
+                      Theme(
+                          data: Theme.of(context).copyWith(primaryColor: Colors.black,),
+                          child: TextField(
+                            controller: _pwCon,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock),
+                              hintText: "Password",
+                            ),
+                            obscureText: true,
+                          ),),
                     ].map((c) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -106,6 +108,7 @@ class LoginWithEmailPageState extends State<LoginWithEmailPage> {
             child: Row(
               children: <Widget>[
                 Checkbox(
+                  activeColor: Colors.black,
                   value: doRemember,
                   onChanged: (newValue) {
                     setState(() {

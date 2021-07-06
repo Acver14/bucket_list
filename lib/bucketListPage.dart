@@ -7,6 +7,7 @@ import 'package:bucket_list/provider/firebase_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:sortedmap/sortedmap.dart';
 import 'constantClass/enumValues.dart';
 import 'package:intl/intl.dart';
 
@@ -115,6 +116,22 @@ class BucketListPageState extends State<BucketListPage> {
     return bucketInfos;
   }
 
+  sortBucketList(){
+    bucketListSnapshot.data.documents.sort((a, b){
+      switch(_sorting){
+        case Sort.importance:
+          return (b['_importance'] < (a['_importance']))?-1:1;
+        case Sort.creationDate:
+          return (b['_startDate'].toDate().isAfter(a['_startDate'].toDate())?-1:1);
+        case Sort.title:
+          if(b['_state'] == 0 && a['_state'] == 0) printLog("${b['_title']} & ${a['_title']}" + b['_title'].toString().compareTo(a['_title'].toString()).toString());
+          return (b['_title'].toString().compareTo(a['_title'].toString()));
+        default:
+          return (b['_title'].toString().compareTo(a['_title'].toString()));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Firestore firestore = Firestore.instance;
@@ -148,14 +165,18 @@ class BucketListPageState extends State<BucketListPage> {
                               value: Sort.creationDate,
                             ),
                             DropdownMenuItem(
-                                child: Text("중요도순"), value: Sort.importance),
+                                child: Text("중요도순"),
+                                value: Sort.importance),
                           ],
                           onChanged: (value) async {
                             setState(() {
                               _sorting = value;
-                              _loaded = false;
+                              //_loaded = false;
+                              printLog(_sorting.toString());
+                              sortBucketList();
+                              getBucketList();
                             });
-                            await loadBucketList();
+                            setState(() {});
                           }),
                     ),
                     Container(
@@ -184,8 +205,7 @@ class BucketListPageState extends State<BucketListPage> {
                           switch (_stateOfView) {
                             case BucketState.incomplete:
                               return Expanded(
-                                  child: Column(
-                                children: [
+                                  child:
                                   new ListView.builder(
                                     //reverse: true,
                                     scrollDirection: Axis.vertical,
@@ -196,9 +216,7 @@ class BucketListPageState extends State<BucketListPage> {
                                       return getIncompleteBucketInfo(
                                           index, incompleteBucketList.length);
                                     },
-                                  )
-                                ],
-                              ));
+                                  ));
                               break;
                             case BucketState.complete:
                               return Expanded(
@@ -233,7 +251,6 @@ class BucketListPageState extends State<BucketListPage> {
                             default:
                               return Expanded(
                                   child: new ListView.builder(
-                                    //reverse: true,
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
                                     controller: _infiniteController,
@@ -360,10 +377,9 @@ class BucketListPageState extends State<BucketListPage> {
                     await refreshBucketList();
                     setState(() {});
                   }
-                  printLog('데이터 삭제');
                 },
                 child: Card(
-                  color: (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-2?Colors.red:
+                  color: doc["_closingDate"]==null?Colors.white:(DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-2?Colors.red:
                   (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-5?Colors.orange:
                     (DateTime.now().difference(doc["_closingDate"].toDate())).inDays>-10?Colors.yellow:Colors.white,
                     child: ListTile(

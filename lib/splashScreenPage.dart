@@ -36,9 +36,9 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     fp = Provider.of<FirebaseProvider>(context);
     return Scaffold(
       body: Container(
-        color: Color(0xff28385e),
+        color: Colors.white,
         child: Center(
-          child: Image.asset('assets/logos/blacklotus.jpg'),
+          child: Image.asset('assets/logos/cube.png'),
         ),
       ),
     );
