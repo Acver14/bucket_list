@@ -3,19 +3,19 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>558642556189-8d3d85goufmce451pq1dkd6inqbhs8uv.apps.googleusercontent.com</string>
+	<string>558642556189-8u7aco4eu4v240mmep8naek320ic7nht.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.558642556189-8d3d85goufmce451pq1dkd6inqbhs8uv</string>
+	<string>com.googleusercontent.apps.558642556189-8u7aco4eu4v240mmep8naek320ic7nht</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>558642556189-4ki1qi3fd9fnmr739pouqfv3nfl24d0k.apps.googleusercontent.com</string>
+	<string>558642556189-4i0rurrt7drsfufk785a13od0epa54dk.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk</string>
+	<string>AIzaSyBqQqJsG6d2NrdwEgQK-3rGzpB0IFq5qyg</string>
 	<key>GCM_SENDER_ID</key>
 	<string>558642556189</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.acver.bucketList</string>
+	<string>com.acver.inYourBucket</string>
 	<key>PROJECT_ID</key>
 	<string>bucket-list-38be8</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:558642556189:ios:08223cfe29dcd9dbe645f4</string>
+	<string>1:558642556189:ios:8a6d297fe62394d8e645f4</string>
 </dict>
 </plist>

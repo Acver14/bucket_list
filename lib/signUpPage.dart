@@ -47,6 +47,13 @@ class SignUpPageState extends State<SignUpPage> {
       //appBar: AppBar(title: Text("Sign-In Page")),
       body: ListView(
         children: <Widget>[
+          SizedBox(height: 50,),
+          Container(
+            child: Image.asset('assets/logos/logo_rectangle.png'),
+            margin: EdgeInsets.all(20.0),
+            height: 200,
+          ),
+          SizedBox(height: 20,),
           NaverSignInButton(onPressed: ()async => await signInWithNaver(_scaffoldKey, fp),),
           GoogleSignInButton(onPressed: () async => await signInWithGoogle(_scaffoldKey, fp),),
           KakaoSignInButton(onPressed: () async => await signInWithKakao(_scaffoldKey, fp),),

@@ -71,7 +71,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
     bucketData = widget.bucket_data;
     _titleCon = new TextEditingController(text: bucketData.getTitle());
     _contentCon = new TextEditingController(text: bucketData.getContent());
-    getCurrentPosition();
+    // getCurrentPosition();
     getPlusImageUrl();
     super.initState();
   }
@@ -81,7 +81,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
         desiredAccuracy: LocationAccuracy.high
     );
 
-    var response = await http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&language=ko&key=${Platform.isIOS?"AIzaSyBBNnJ6OcABWU1t33pBEl8w-IpzesX1iWk":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"}");
+    var response = await http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&language=ko&key=${Platform.isIOS?"AIzaSyBqQqJsG6d2NrdwEgQK-3rGzpB0IFq5qyg":"AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"}");
     String _currentAddress = json.decode(response.body)["results"][0]["formatted_address"];
     printLog(_currentAddress);
 
@@ -171,10 +171,11 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
                 activeColor: Colors.black,
                 activeText: '완료',
                 inactiveText: '수정',
-                onToggle: (val) {
+                onToggle: (val) async {
                   setState(() {
                     _mode = val;
                   });
+                  if(_mode) await getCurrentPosition();
                 },
               ),
             ),

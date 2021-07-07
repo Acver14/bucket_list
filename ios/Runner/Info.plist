@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>bucket_list</string>
+	<string>inYourBucket</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.558642556189-8d3d85goufmce451pq1dkd6inqbhs8uv</string>
+				<string>com.googleusercontent.apps.558642556189-8u7aco4eu4v240mmep8naek320ic7nht</string>
 			</array>
 		</dict>
 		<dict>

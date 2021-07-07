@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bucket_list/constantClass/sizeConstant.dart';
 import 'package:bucket_list/dataClass/bucketDataClass.dart';
 import 'package:bucket_list/method/popupMenu.dart';
 import 'package:bucket_list/method/printLog.dart';
@@ -200,6 +201,7 @@ class BucketListPageState extends State<BucketListPage> {
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
                         return Container(
+                          height: getDisplayHeight(context)/2,
                           child: widgetLoading(),
                         );
                       } else {

@@ -37,6 +37,57 @@
             {
               "client_id": "558642556189-9cknn7nd84v80gli4f2toafeei77h4um.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "558642556189-2rrjmg0frmdqbah7mo6odg9r35f3b8ip.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acver.sd"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558642556189:android:d9501f2175faa39fe645f4",
+        "android_client_info": {
+          "package_name": "com.acver.inYourBucket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558642556189-4i0rurrt7drsfufk785a13od0epa54dk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acver.inYourBucket",
+            "certificate_hash": "f566cfd930c41e8ae3078880bd5047c56472f9c5"
+          }
+        },
+        {
+          "client_id": "558642556189-9cknn7nd84v80gli4f2toafeei77h4um.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGpf-tcrPW-ip9vXr7NVaUZvrn8zavXAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558642556189-9cknn7nd84v80gli4f2toafeei77h4um.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "558642556189-2rrjmg0frmdqbah7mo6odg9r35f3b8ip.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acver.sd"
+              }
             }
           ]
         }

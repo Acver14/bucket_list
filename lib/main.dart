@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             create: (context) => FirebaseProvider())
       ],
       child: MaterialApp(
-        title: "Flutter Firebase",
+        title: "inYourBucket",
         home: SplashScreenPage(),
         debugShowCheckedModeBanner: false,
       ),
