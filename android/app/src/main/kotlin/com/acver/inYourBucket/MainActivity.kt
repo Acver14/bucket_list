@@ -1,4 +1,4 @@
-package com.acver.bucket_list
+package com.acver.inYourBucket
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

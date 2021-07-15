@@ -116,8 +116,8 @@ class FirebaseProvider with ChangeNotifier {
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       final FirebaseUser user =
           (await fAuth.signInWithCredential(credential)).user;
-      assert(user.email != null);
-      assert(user.displayName != null);
+      //assert(user.email != null);
+      //assert(user.displayName != null);
       assert(!user.isAnonymous);
       assert(await user.getIdToken() != null);
 

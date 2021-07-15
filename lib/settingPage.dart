@@ -141,7 +141,8 @@ class SettingPageState extends State<SettingPage> {
                                     children: [
                                       Text('별명 : ' + userInfo['nickName']),
                                       SizedBox(height:5),
-                                      Text('달성률 : ${((userInfo['numOfComplete'] / (userInfo['numOfComplete'] + userInfo['numOfIncomplete'])) * 100).toStringAsFixed(2)}%')
+                                      Text('달성률 : ${(userInfo['numOfComplete'] + userInfo['numOfIncomplete'])==0?
+                                      0:((userInfo['numOfComplete'] / (userInfo['numOfComplete'] + userInfo['numOfIncomplete'])) * 100).toStringAsFixed(2)}%')
                                     ],
                                   )
                                 ],

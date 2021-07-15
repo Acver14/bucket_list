@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -35,7 +35,7 @@
 			<string>Client</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>558642556189-8d3d85goufmce451pq1dkd6inqbhs8uv.apps.googleusercontent.com</string>
+				<string>com.googleusercontent.apps.558642556189-8d3d85goufmce451pq1dkd6inqbhs8uv</string>
 			</array>
 		</dict>
 		<dict>
@@ -58,7 +58,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KAKAO_API_KEY</key>
 	<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
 	<key>LSApplicationCategoryType</key>
@@ -101,8 +101,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>To use API for apps</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>To set your bucket schedule</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To take pictures of your trash</string>
+	<key>NSContactsUsageDescription</key>
+	<string>To contacts your eamil</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Why is my app authenticating using face id?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -110,11 +116,15 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>To record your bucket list completion location.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To check your access</string>
+	<key>NSMotionUsageDescription</key>
+	<string>To use AP for apps</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To bring your picture</string>
+	<string>To bring your picture and register your photo on the bucket list.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>To customize app</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

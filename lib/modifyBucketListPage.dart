@@ -176,6 +176,7 @@ class ModifyBucketListPageState extends State<ModifyBucketListPage> {
                     _mode = val;
                   });
                   if(_mode) await getCurrentPosition();
+                  setState(() {});
                 },
               ),
             ),
