@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     KakaoContext.clientId = "7da825303df3079be26a6a3f36e1a55e";
-    KakaoContext.javascriptClientId = "7da825303df3079be26a6a3f36e1a55e";
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FirebaseProvider>(

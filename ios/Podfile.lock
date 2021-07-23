@@ -212,6 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - Alamofire (5.4.3)
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
@@ -399,6 +400,17 @@ PODS:
     - Flutter
   - kakao_flutter_sdk (0.5.4):
     - Flutter
+  - KakaoSDKAuth (2.5.5):
+    - KakaoSDKCommon (= 2.5.5)
+  - KakaoSDKCommon (2.5.5):
+    - KakaoSDKCommon/Common (= 2.5.5)
+    - KakaoSDKCommon/Network (= 2.5.5)
+  - KakaoSDKCommon/Common (2.5.5)
+  - KakaoSDKCommon/Network (2.5.5):
+    - Alamofire (~> 5.1)
+    - KakaoSDKCommon/Common (= 2.5.5)
+  - KakaoSDKUser (2.5.5):
+    - KakaoSDKAuth (= 2.5.5)
   - leveldb-library (1.22.1)
   - local_auth (0.0.1):
     - Flutter
@@ -440,6 +452,9 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - kakao_flutter_sdk (from `.symlinks/plugins/kakao_flutter_sdk/ios`)
+  - KakaoSDKAuth
+  - KakaoSDKCommon
+  - KakaoSDKUser
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -451,6 +466,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
+    - Alamofire
     - AppAuth
     - BoringSSL-GRPC
     - Firebase
@@ -472,6 +488,9 @@ SPEC REPOS:
     - gRPC-Core
     - GTMAppAuth
     - GTMSessionFetcher
+    - KakaoSDKAuth
+    - KakaoSDKCommon
+    - KakaoSDKUser
     - leveldb-library
     - nanopb
     - naveridlogin-sdk-ios
@@ -525,6 +544,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   apple_sign_in_firebase: 77da8ad8cb8225fd6d56a8a64c22fc6b7d2b9e0f
@@ -561,6 +581,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   kakao_flutter_sdk: b9b525a2b41cb75a761bea4b48dba4121f58dce1
+  KakaoSDKAuth: 7474cf67d199a9c2ec6a46e4ed8398cf34c1262d
+  KakaoSDKCommon: fb2c9223a86d6f65a8ba73bbaad7cec6a2b09630
+  KakaoSDKUser: 7bb1c38bbd4608bd4e7eebbd4eda130338364fb3
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
@@ -573,6 +596,6 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 1a710b1712effccc4437be6cf06f515c8fa2a695
+PODFILE CHECKSUM: 217c955866695abd33cc08a5d978baa7265a642f
 
 COCOAPODS: 1.10.0

@@ -144,6 +144,8 @@ class FirebaseProvider with ChangeNotifier {
       }else{
         authCode = await AuthCodeClient.instance.request();
       }
+
+      //authCode = await AuthCodeClient.instance.request();
       var token = await AuthApi.instance.issueAccessToken(authCode);
       AccessTokenStore.instance.toStore(token);
       printLog(token.accessToken);

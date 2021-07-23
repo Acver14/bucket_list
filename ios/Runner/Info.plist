@@ -60,7 +60,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KAKAO_API_KEY</key>
-	<string>kakao7da825303df3079be26a6a3f36e1a55e</string>
+	<string>7da825303df3079be26a6a3f36e1a55e</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>

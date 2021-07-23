@@ -431,7 +431,7 @@ class BucketListPageState extends State<BucketListPage> {
                       builder: (context) => CompletedBucketListPage(
                             bucket_data: bucket_data,
                           ));
-                  Navigator.push(context, route);
+                  Navigator.push(context, route).then(refreshBucketListPage);
                 },
                 child: Card(
                     child: ListTile(

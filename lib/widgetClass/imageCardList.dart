@@ -152,6 +152,7 @@ Widget build(BuildContext context) {
   if (displayNameTag) {
     map.forEach((key, value) {
       list.add(_ImageCard(
+        imageTitle: key,
         imagePath: value,
         onTap: onTap,
       ));
@@ -319,7 +320,7 @@ class _ImageView extends StatelessWidget {
           /// Checking if it's a network image or an asset image and
           /// acting accordingly.
           image: imagePath.contains('http')?NetworkImage(imagePath):Image.file(File(imagePath)).image,
-          fit: BoxFit.fill,
+          fit: BoxFit.fitHeight,
           alignment: Alignment.topCenter,
         ),
       ),

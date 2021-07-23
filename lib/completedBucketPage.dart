@@ -85,7 +85,12 @@ class CompletedBucketListPageState extends State<CompletedBucketListPage> {
             padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
             child: Container(
               child:
-              IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.black,)),
+              IconButton(onPressed: ()async {
+                if(await popupTextAndButton(context, '버킷리스트를 완전히 삭제하시겠습니까?')){
+                  removeBucket(bucketData);
+                  Navigator.pop(context);
+                }
+              }, icon: Icon(Icons.delete, color: Colors.black,)),
             ),
           ),
         ],
@@ -121,6 +126,18 @@ class CompletedBucketListPageState extends State<CompletedBucketListPage> {
       ],
     );
   }
+
+  removeBucket(BucketClass bucketData) async{
+    Firestore firestore = Firestore.instance;
+
+    await firestore.collection(fp.getUser().uid).document('bucket_list').collection('buckets').document(bucketData.getId().toString())
+        .delete();
+    await firestore.collection(fp.getUser().uid).document('user_info')
+        .setData({
+      "numOfTrash" : fp.getUserInfo()['numOfTrash']-1,
+    }, merge: true);
+    await fp.setUserInfo();
+  }
 }
 
 getWidgetForText(double width, double height, TextEditingController con, String labelText){
@@ -149,3 +166,4 @@ getWidgetForText(double width, double height, TextEditingController con, String 
       )
   );
 }
+

@@ -15,12 +15,17 @@ import NaverThirdPartyLogin
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-    
     override func application(
                 _ app: UIApplication,
                 open url: URL,
                 options: [UIApplication.OpenURLOptionsKey : Any] = [:]
         ) -> Bool {
+        var result = false
+        NSLog("URL = \(url.absoluteString)")
+        if url.absoluteString.hasPrefix("kakao"){ result = super.application(app, open: url, options: options)
+            
+        }
+        if !result{
             if(NaverThirdPartyLoginConnection.getSharedInstance() != nil){
                 let instance = NaverThirdPartyLoginConnection.getSharedInstance()
 
@@ -45,6 +50,7 @@ import NaverThirdPartyLogin
 
                 return ((instance?.application(app, open: url, options: options)) != nil)
             }
+        }
 
             return false
         }
